@@ -28,6 +28,24 @@ class _DashBoardScreenState extends State<DashBoardScreen> {
             fontWeight: FontWeight.bold,
           ),
         ),
+        actions: [
+          IconButton(
+            icon: const Icon(Icons.notifications),
+            color: AppColors.yellowcolor,
+            onPressed: () {
+              // Handle notification icon press
+              print('Notification icon pressed');
+            },
+          ),
+          IconButton(
+            icon: const Icon(Icons.power_settings_new_sharp),
+            onPressed: () {
+              // Handle login icon press
+              print('Login icon pressed');
+            },
+            color:AppColors.yellowcolor
+          ),
+        ],
       ),
       body: Container(
         color: Colors.black, // Background color for the body
