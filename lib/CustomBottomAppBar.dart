@@ -2,7 +2,7 @@ import 'package:bank_application/resources/colors.dart';
 import 'package:flutter/material.dart';
 
 class CustomBottomAppBar extends StatelessWidget {
-  const CustomBottomAppBar({Key? key}) : super(key: key);
+  const CustomBottomAppBar({super.key});
 
   @override
   Widget build(BuildContext context) {

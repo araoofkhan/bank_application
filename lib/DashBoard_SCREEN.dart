@@ -154,8 +154,14 @@ class _DashBoardScreenState extends State<DashBoardScreen> {
                               margin: const EdgeInsets.only(top: 10.0), // Add margin only from top
                               child: Column(
                                 children: [
-                                  Image.asset('lib/resources/icons/moneytransfer.png', width: 50, height: 50), // Adjust size as needed
-                                  const SizedBox(height: 10), // Space between image and text
+                                  GestureDetector(
+                                    onTap: () {
+                                      // Handle the tap for "Send Money" image
+                                      print('Send Money tapped');
+                                    },
+                                    child: Image.asset('lib/resources/icons/moneytransfer.png', width: 50, height: 50), // Adjust size as needed
+                                  ),
+                                 // const SizedBox(height: 10), // Space between image and text
                                   const Text(
                                     'Money transfer',
                                     style: TextStyle(
@@ -165,8 +171,16 @@ class _DashBoardScreenState extends State<DashBoardScreen> {
                                     ), // Adjust size as needed
                                   ),
                                   const SizedBox(height: 10), // Space between text and next image
+
+                                  GestureDetector(
+                                    onTap: () {
+                                      // Handle the tap for "Send Money" image
+                                      print('Debit Card Tapped');
+                                    },
+                                    child:
                                   Image.asset('lib/resources/icons/creditcard.png', width: 50, height: 50),
-                                  const SizedBox(height: 10), // Space between image and text
+                                  ),
+                              //    const SizedBox(height: 10), // Space between image and text
                                   const Text(
                                     'Debit Card',
                                     style: TextStyle(
@@ -176,8 +190,18 @@ class _DashBoardScreenState extends State<DashBoardScreen> {
                                     ),
                                   ),
                                   const SizedBox(height: 10), // Space between text and next image
-                                  Image.asset('lib/resources/icons/donations.png', width: 50, height: 50),
-                                  const SizedBox(height: 10), // Space between image and text
+
+                                  GestureDetector(
+                                    onTap: () {
+                                      // Handle the tap for "Send Money" image
+                                      print('Donations Tapped');
+                                    },
+                                    child:
+                                    Image.asset('lib/resources/icons/donations.png', width: 50, height: 50),
+                                  ),
+
+
+                                //  const SizedBox(height: 10), // Space between image and text
                                   const Text(
                                     'Zakat & Sadqat',
                                     style: TextStyle(
@@ -199,8 +223,15 @@ class _DashBoardScreenState extends State<DashBoardScreen> {
                               margin: const EdgeInsets.only(top: 10.0), // Add margin only from top
                               child: Column(
                                 children: [
-                                  Image.asset('lib/resources/icons/bill.png', width: 50, height: 50), // Adjust size as needed
-                                  const SizedBox(height: 10), // Space between image and text
+                                  GestureDetector(
+                                    onTap: () {
+                                      // Handle the tap for "Send Money" image
+                                      print('Bills Tapped');
+                                    },
+                                    child:
+                                    Image.asset('lib/resources/icons/bill.png', width: 50, height: 50),
+                                  ), // Adjust size as needed
+                               //   const SizedBox(height: 10), // Space between image and text
                                   const Text(
                                     'Bills & Top up',
                                     style: TextStyle(
@@ -210,8 +241,15 @@ class _DashBoardScreenState extends State<DashBoardScreen> {
                                     ),
                                   ),
                                   const SizedBox(height: 10), // Space between text and next image
-                                  Image.asset('lib/resources/icons/raast.png', width: 50, height: 50, color: Colors.white),
-                                  const SizedBox(height: 10), // Space between image and text
+                                  GestureDetector(
+                                    onTap: () {
+                                      // Handle the tap for "Send Money" image
+                                      print('Raast Tapped');
+                                    },
+                                    child:
+                                    Image.asset('lib/resources/icons/raast.png', width: 50, height: 50,color: Colors.white),
+                                  ),
+                               //   const SizedBox(height: 10), // Space between image and text
                                   const Text(
                                     'Raast Payments',
                                     style: TextStyle(
@@ -221,8 +259,15 @@ class _DashBoardScreenState extends State<DashBoardScreen> {
                                     ),
                                   ),
                                   const SizedBox(height: 10), // Space between text and next image
-                                  Image.asset('lib/resources/icons/settings.png', width: 50, height: 50),
-                                  const SizedBox(height: 10), // Space between image and text
+                                  GestureDetector(
+                                    onTap: () {
+                                      // Handle the tap for "Send Money" image
+                                      print('Setting Tapped');
+                                    },
+                                    child:
+                                    Image.asset('lib/resources/icons/settings.png', width: 50, height: 50),
+                                  ),
+                               //   const SizedBox(height: 10), // Space between image and text
                                   const Text(
                                     'Settings',
                                     style: TextStyle(
@@ -241,11 +286,21 @@ class _DashBoardScreenState extends State<DashBoardScreen> {
                   ),
                   Container(
                     alignment: Alignment.center,
-                    margin: const EdgeInsets.only(top: 10.0), // Add margin only from top
+                    margin: const EdgeInsets.only(top: 30.0), // Add margin only from top
                     child: Column(
                       children: [
-                        Image.asset('lib/resources/icons/feedback.png', width: 60, height: 60),
-                        const SizedBox(height: 10),
+
+                        GestureDetector(
+                          onTap: () {
+                            // Handle the tap for "Send Money" image
+                            print('Feed Back Tapped');
+                          },
+                          child:
+                          Image.asset('lib/resources/icons/feedback.png', width: 60, height: 60),
+                        ),
+
+
+                      //  const SizedBox(height: 10),
                         const Text(
                           'Feed Back',
                           style: TextStyle(
@@ -268,8 +323,8 @@ class _DashBoardScreenState extends State<DashBoardScreen> {
         onPressed: () {
           // Add action for barcode scanner
         },
-        child: const Icon(Icons.qr_code_scanner, color: Colors.white, size: 45),
-        backgroundColor: AppColors.primarycolor, // Background color for the scanner icon
+        backgroundColor: AppColors.primarycolor,
+        child: const Icon(Icons.qr_code_scanner, color: Colors.white, size: 45), // Background color for the scanner icon
       ),
       floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
     );
