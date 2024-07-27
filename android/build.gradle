@@ -1,3 +1,20 @@
+buildscript {
+    repositories {
+        google()
+        mavenCentral()
+    }
+    dependencies {
+        classpath 'com.android.tools.build:gradle:7.2.2'
+        classpath 'com.google.gms:google-services:4.4.2' // Update to the latest version
+        // Add the Firebase Crashlytics plugin if you're using it
+        classpath 'com.google.firebase:firebase-crashlytics-gradle:3.0.2'
+    }
+}
+
+plugins {
+    id 'com.google.gms.google-services' version '4.4.2' apply false // Make sure the version is updated
+}
+
 allprojects {
     repositories {
         google()

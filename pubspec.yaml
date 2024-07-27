@@ -28,11 +28,17 @@ environment:
 # the latest version available on pub.dev. To see which dependencies have newer
 # versions available, run `flutter pub outdated`.
 dependencies:
+
   flutter:
     sdk: flutter
+  firebase_core: ^3.2.0
+  firebase_auth: ^5.1.2
+  cloud_firestore: ^5.1.0
+  firebase_storage: ^12.1.1
+  fluttertoast: ^8.2.1
+  firebase_database: ^11.0.4
+  connectivity_plus: ^2.3.0
   intl: any
-fonts:
-
 
 
   # The following adds the Cupertino Icons font to your application.
@@ -70,6 +76,14 @@ flutter:
             - lib/resources/icons/raast.png
             - lib/resources/icons/settings.png
             - lib/resources/icons/feedback.png
+            - lib/resources/banklogo/albarka.png
+            - lib/resources/banklogo/allied.png
+            - lib/resources/banklogo/apna.png
+            - lib/resources/banklogo/askari.png
+            - lib/resources/banklogo/meezan.png
+            - lib/resources/banklogo/bop.png
+            - lib/resources/banklogo/bok.png
+            - lib/resources/banklogo/bankislami.png
 
 
   #       - asset: fonts/Schyler-Italic.ttf

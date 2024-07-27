@@ -1,7 +1,9 @@
 import 'package:bank_application/resources/colors.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
-import 'CustomBottomAppBar.dart';
+import 'package:bank_application/screens/MoneyTransferScreen.dart';
+import 'package:bank_application/widgets/CustomBottomAppBar.dart';
+
 
 class DashBoardScreen extends StatefulWidget {
   const DashBoardScreen({super.key});
@@ -24,7 +26,7 @@ class _DashBoardScreenState extends State<DashBoardScreen> {
           style: TextStyle(
             color: Colors.white,
             fontFamily: 'CustomFont',
-            fontSize: 16,
+            fontSize: 18,
             fontWeight: FontWeight.bold,
           ),
         ),
@@ -174,7 +176,12 @@ class _DashBoardScreenState extends State<DashBoardScreen> {
                                 children: [
                                   GestureDetector(
                                     onTap: () {
-                                      // Handle the tap for "Send Money" image
+                                      Navigator.push(
+                                        context,
+                                        MaterialPageRoute(
+                                          builder: (context) => MoneyTransferScreen(),
+                                        ),
+                                      );
                                       print('Send Money tapped');
                                     },
                                     child: Image.asset('lib/resources/icons/moneytransfer.png', width: 50, height: 50), // Adjust size as needed
