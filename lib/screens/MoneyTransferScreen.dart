@@ -1,15 +1,14 @@
 import 'package:bank_application/resources/colors.dart';
-import 'package:bank_application/screens/AccountNumberEntryScreen.dart';
+
 import 'package:flutter/material.dart';
 import 'package:bank_application/widgets/BeneficiaryList.dart';
 import 'package:bank_application/screens/AddNewBeneficiaryScreen.dart';
 
-import 'package:cloud_firestore/cloud_firestore.dart';
 
 
 
 class MoneyTransferScreen extends StatelessWidget {
-  const MoneyTransferScreen({super.key});
+  const MoneyTransferScreen({super.key, required String formattedAmount,});
 
   @override
   Widget build(BuildContext context) {

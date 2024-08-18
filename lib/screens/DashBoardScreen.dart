@@ -5,6 +5,15 @@ import 'package:bank_application/screens/MoneyTransferScreen.dart';
 import 'package:bank_application/widgets/CustomBottomAppBar.dart';
 
 
+// Global function to format currency
+String formatAmount(double amount) {
+  final NumberFormat currencyFormat = NumberFormat.currency(locale: 'en_US', symbol: '');
+  return currencyFormat.format(amount);
+}
+
+// Global variable for formatted amount
+String formattedAmount = formatAmount(50000.00);
+
 class DashBoardScreen extends StatefulWidget {
   const DashBoardScreen({super.key});
 
@@ -15,8 +24,6 @@ class DashBoardScreen extends StatefulWidget {
 class _DashBoardScreenState extends State<DashBoardScreen> {
   @override
   Widget build(BuildContext context) {
-    final NumberFormat currencyFormat = NumberFormat.currency(locale: 'en_US', symbol: '');
-    final String formattedAmount = currencyFormat.format(50000.00);
 
     return Scaffold(
       appBar: AppBar(
@@ -179,7 +186,7 @@ class _DashBoardScreenState extends State<DashBoardScreen> {
                                       Navigator.push(
                                         context,
                                         MaterialPageRoute(
-                                          builder: (context) => MoneyTransferScreen(),
+                                          builder: (context) => MoneyTransferScreen(formattedAmount: formattedAmount),
                                         ),
                                       );
                                       print('Send Money tapped');

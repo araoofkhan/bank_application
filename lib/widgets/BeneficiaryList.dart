@@ -162,7 +162,7 @@ class _BeneficiaryListState extends State<BeneficiaryList> {
               beneficiaryName: beneficiary.nickname,
               accountNumber: beneficiary.accountNumber,
               bankLogo: beneficiary.bankLogo,
-              availableBalance: 25000, // Pass the balance (example value)
+           // Pass the balance (example value)
             ),
             ),
             );
