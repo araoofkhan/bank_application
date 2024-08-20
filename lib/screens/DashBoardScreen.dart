@@ -83,7 +83,7 @@ class _DashBoardScreenState extends State<DashBoardScreen> {
                       fontWeight: FontWeight.bold,
                     ),
                   ),
-                   Center(
+                  Center(
                     child: Text(
                       accountHolderName,
                       style: TextStyle(

@@ -7,11 +7,12 @@ class ConfirmPaymentScreen extends StatelessWidget {
   final String beneficiaryName;
   final String bankLogo;
   final String accountNumber;
+  final String bankName;
   ConfirmPaymentScreen({
     required this.amount,
     required this.beneficiaryName,
     required this.bankLogo,
-    required this.accountNumber,
+    required this.accountNumber, required this.bankName,
 
   });
 
@@ -102,7 +103,7 @@ class ConfirmPaymentScreen extends StatelessWidget {
                 children: [
                   _buildRow('Account Number','$accountNumber'),
                   _buildRow('Account Title', '$beneficiaryName'),
-                  _buildRow('Bank Name', 'bankName'),
+                  _buildRow('Bank Name', '$bankName'),
                   _buildRow('Branch', ''),
                 ],
               ),
@@ -162,14 +163,7 @@ class ConfirmPaymentScreen extends StatelessWidget {
             ),
           ],
         ),
-      ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: () {
-          // Handle floating action button press
-        },
-        child: Icon(Icons.add),
-      ),
-    );
+      ));
   }
 
   Widget _buildRow(String title, String value) {

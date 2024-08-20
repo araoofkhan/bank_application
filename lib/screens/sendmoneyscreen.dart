@@ -8,11 +8,11 @@ class SendMoneyScreen extends StatefulWidget {
   final String beneficiaryName;
   final String accountNumber;
   final String bankLogo;
-
+  final String bankName;
   SendMoneyScreen({
     required this.beneficiaryName,
     required this.accountNumber,
-    required this.bankLogo,
+    required this.bankLogo, required this.bankName,
   });
 
   @override
@@ -140,7 +140,7 @@ class _SendMoneyScreenState extends State<SendMoneyScreen> {
         MaterialPageRoute(
           builder: (context) => ConfirmPaymentScreen(
             amount: formattedAmount,
-            beneficiaryName: widget.beneficiaryName, bankLogo: widget.bankLogo, accountNumber: widget.accountNumber,
+            beneficiaryName: widget.beneficiaryName, bankLogo: widget.bankLogo, accountNumber: widget.accountNumber,bankName: widget.bankName,
           ),
         ),
       );
