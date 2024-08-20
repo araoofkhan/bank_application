@@ -13,7 +13,8 @@ String formatAmount(double amount) {
 
 // Global variable for formatted amount
 String formattedAmount = formatAmount(50000.00);
-
+String accountHolderName = 'ABDUL RAOOF';
+String accountHolderaccountNmber='Current-96010102876644';
 class DashBoardScreen extends StatefulWidget {
   const DashBoardScreen({super.key});
 
@@ -82,9 +83,9 @@ class _DashBoardScreenState extends State<DashBoardScreen> {
                       fontWeight: FontWeight.bold,
                     ),
                   ),
-                  const Center(
+                   Center(
                     child: Text(
-                      'ABDUL RAOOF',
+                      accountHolderName,
                       style: TextStyle(
                         color: Colors.black,
                         fontFamily: 'CustomFont',
@@ -106,9 +107,9 @@ class _DashBoardScreenState extends State<DashBoardScreen> {
                     ),
                   ),
                   const SizedBox(height: 5.0), // Add spacing between texts
-                  const Center(
+                  Center(
                     child: Text(
-                      'Current-96010102876644',
+                      accountHolderaccountNmber,
                       style: TextStyle(
                         color: Colors.black,
                         fontFamily: 'CustomFont',
