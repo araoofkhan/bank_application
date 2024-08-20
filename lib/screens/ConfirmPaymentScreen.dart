@@ -1,20 +1,37 @@
 import 'package:bank_application/resources/colors.dart';
-import 'package:bank_application/screens/DashBoardScreen.dart';
 import 'package:flutter/material.dart';
 
+import 'DashBoardScreen.dart';
+
 class ConfirmPaymentScreen extends StatelessWidget {
-  final String amount;
+  final double amount;
   final String beneficiaryName;
   final String bankLogo;
   final String accountNumber;
   final String bankName;
+
   ConfirmPaymentScreen({
     required this.amount,
     required this.beneficiaryName,
     required this.bankLogo,
-    required this.accountNumber, required this.bankName,
-
+    required this.accountNumber,
+    required this.bankName,
   });
+
+  double bankCharges() {
+    double charges = 0.0;
+
+  //  double numericAmount = double.tryParse(amount) ?? 0.0; // Convert amount to double
+
+    if (amount > 50000) {
+      charges = 0.001 * amount;
+
+    } else {
+    charges=0;
+    }
+
+    return charges;
+  }
 
 
   @override
@@ -25,19 +42,19 @@ class ConfirmPaymentScreen extends StatelessWidget {
         backgroundColor: Colors.purple,
         actions: [
           IconButton(
-            icon: Icon(Icons.home,color: AppColors.yellowcolor,),
+            icon: Icon(Icons.home, color: AppColors.yellowcolor),
             onPressed: () {
               // Handle home button action
             },
           ),
           IconButton(
-            icon: Icon(Icons.notifications,color: AppColors.yellowcolor),
+            icon: Icon(Icons.notifications, color: AppColors.yellowcolor),
             onPressed: () {
               // Handle notifications button action
             },
           ),
           IconButton(
-            icon: Icon(Icons.power_settings_new,color: AppColors.yellowcolor),
+            icon: Icon(Icons.power_settings_new, color: AppColors.yellowcolor),
             onPressed: () {
               // Handle power off button action
             },
@@ -67,7 +84,8 @@ class ConfirmPaymentScreen extends StatelessWidget {
               ),
               child: Row(
                 children: [
-                  Image.asset('lib/resources/banklogo/meezan.png', // Update the image path accordingly
+                  Image.asset(
+                    'lib/resources/banklogo/meezan.png', // Use bankLogo to dynamically load the image
                     width: 40.0,
                     height: 40.0,
                   ),
@@ -75,8 +93,21 @@ class ConfirmPaymentScreen extends StatelessWidget {
                   Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Text(accountHolderName,style: TextStyle(fontSize:18,fontWeight: FontWeight.bold,fontFamily:'CustomFont'),),
-                      Text(accountHolderaccountNmber,style: TextStyle(fontSize:18,fontFamily:'CustomFont'),),
+                      Text(
+                        accountHolderName, // Replace with actual global or passed value
+                        style: TextStyle(
+                          fontSize: 18,
+                          fontWeight: FontWeight.bold,
+                          fontFamily: 'CustomFont',
+                        ),
+                      ),
+                      Text(
+                        accountHolderaccountNmber, // Replace with actual global or passed value
+                        style: TextStyle(
+                          fontSize: 18,
+                          fontFamily: 'CustomFont',
+                        ),
+                      ),
                     ],
                   ),
                 ],
@@ -101,10 +132,10 @@ class ConfirmPaymentScreen extends StatelessWidget {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  _buildRow('Account Number','$accountNumber'),
-                  _buildRow('Account Title', '$beneficiaryName'),
-                  _buildRow('Bank Name', '$bankName'),
-                  _buildRow('Branch', ''),
+                  _buildRow('Account Number', accountNumber),
+                  _buildRow('Account Title', beneficiaryName),
+                  _buildRow('Bank Name', bankName),
+                  _buildRow('Branch', ''), // Add branch info if available
                 ],
               ),
             ),
@@ -127,9 +158,10 @@ class ConfirmPaymentScreen extends StatelessWidget {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  _buildRow('Amount', formattedAmount),
-                  _buildRow('Bank Charges', ''),
-                  _buildRow('Total Amount', ''),
+                  _buildRow('Amount', amount.toStringAsFixed(2)), // Display the amount with 2 decimal places
+                  _buildRow('Bank Charges', bankCharges().toStringAsFixed(2)), // Display the bank charges with 2 decimal places
+                  _buildRow('Total Amount', (amount + bankCharges()).toStringAsFixed(2)), // Display total amount (sum of amount and bank charges)
+
                 ],
               ),
             ),
@@ -151,7 +183,13 @@ class ConfirmPaymentScreen extends StatelessWidget {
                 Expanded(
                   child: ElevatedButton(
                     onPressed: () {
-                      // Handle pay now action
+                     /* print("Amount: ${amount.toStringAsFixed(2)}"); // Converts amount to String with 2 decimal places
+                      print("Bank Charges: ${bankCharges().toStringAsFixed(2)}"); // Converts bankCharges() to String with 2 decimal places
+                      String amnt = (amount + bankCharges()).toStringAsFixed(2);
+                      print("Bank Charges: $amnt");
+*/
+
+
                     },
                     style: ElevatedButton.styleFrom(
                       backgroundColor: Colors.amber,
@@ -163,7 +201,8 @@ class ConfirmPaymentScreen extends StatelessWidget {
             ),
           ],
         ),
-      ));
+      ),
+    );
   }
 
   Widget _buildRow(String title, String value) {

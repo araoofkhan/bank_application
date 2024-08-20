@@ -10,9 +10,9 @@ String formatAmount(double amount) {
   final NumberFormat currencyFormat = NumberFormat.currency(locale: 'en_US', symbol: '');
   return currencyFormat.format(amount);
 }
-
+double balance=5000000;
 // Global variable for formatted amount
-String formattedAmount = formatAmount(50000.00);
+String formattedAmount = formatAmount(balance);
 String accountHolderName = 'ABDUL RAOOF';
 String accountHolderaccountNmber='Current-96010102876644';
 class DashBoardScreen extends StatefulWidget {

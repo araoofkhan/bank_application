@@ -1,4 +1,5 @@
 import 'package:bank_application/screens/ConfirmPaymentScreen.dart';
+import 'package:bank_application/screens/DashBoardScreen.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import '../resources/colors.dart';
@@ -34,7 +35,7 @@ class _SendMoneyScreenState extends State<SendMoneyScreen> {
     super.initState();
 
     // Example initial value, update accordingly
-    final String formattedAmount = formatAmount(50000.00); // Ensure formatAmount is implemented correctly
+    final String formattedAmount = formatAmount(balance); // Ensure formatAmount is implemented correctly
     _initialBalance = double.tryParse(formattedAmount.replaceAll(',', '')) ?? 0.0;
     _updatedBalance = _initialBalance;
 
@@ -83,7 +84,6 @@ class _SendMoneyScreenState extends State<SendMoneyScreen> {
       );
     });
   }
-
   void _dismissKeyboard() {
     FocusScope.of(context).unfocus();
   }
@@ -132,21 +132,23 @@ class _SendMoneyScreenState extends State<SendMoneyScreen> {
         },
       );
     } else {
-      // Format the entered amount before passing to the next screen
-      final formattedAmount = formatInputAmount(enteredAmountString);
-      _dismissKeyboard();
+      _dismissKeyboard(); // Hide the keyboard
+
+      // Navigate to the ConfirmPaymentScreen
       Navigator.push(
         context,
         MaterialPageRoute(
           builder: (context) => ConfirmPaymentScreen(
-            amount: formattedAmount,
-            beneficiaryName: widget.beneficiaryName, bankLogo: widget.bankLogo, accountNumber: widget.accountNumber,bankName: widget.bankName,
+            amount: enteredAmount, // Pass as double
+            beneficiaryName: widget.beneficiaryName,
+            bankLogo: widget.bankLogo,
+            accountNumber: widget.accountNumber,
+            bankName: widget.bankName,
           ),
         ),
       );
     }
   }
-
 
 
   @override
