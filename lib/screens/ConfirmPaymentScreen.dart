@@ -1,8 +1,13 @@
+import 'dart:ui';
+
 import 'package:bank_application/resources/colors.dart';
 import 'package:bank_application/screens/sendmoneyscreen.dart';
 import 'package:flutter/material.dart';
+import 'package:screenshot/screenshot.dart';
+import 'package:image_gallery_saver/image_gallery_saver.dart';
 
 import 'DashBoardScreen.dart';
+import 'PaymentConfirmationScreen.dart';
 
 class ConfirmPaymentScreen extends StatelessWidget {
   final double amount;
@@ -137,10 +142,10 @@ class ConfirmPaymentScreen extends StatelessWidget {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  _buildRow('Account Number', accountNumber),
-                  _buildRow('Account Title', beneficiaryName),
-                  _buildRow('Bank Name', bankName),
-                  _buildRow('Branch', ''), // Add branch info if available
+                  _buildRow('Account Number', accountNumber,Colors.white),
+                  _buildRow('Account Title', beneficiaryName,Colors.white),
+                  _buildRow('Bank Name', bankName,Colors.white),
+                  _buildRow('Branch', '',Colors.white), // Add branch info if available
                 ],
               ),
             ),
@@ -163,9 +168,9 @@ class ConfirmPaymentScreen extends StatelessWidget {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  _buildRow('Amount', amount.toStringAsFixed(2)), // Display the amount with 2 decimal places
-                  _buildRow('Bank Charges', bankCharges().toStringAsFixed(2)), // Display the bank charges with 2 decimal places
-                  _buildRow('Total Amount', (amount + bankCharges()).toStringAsFixed(2)), // Display total amount (sum of amount and bank charges)
+                  _buildRow('Amount', amount.toStringAsFixed(2),Colors.white), // Display the amount with 2 decimal places
+                  _buildRow('Bank Charges', bankCharges().toStringAsFixed(2),AppColors.yellowcolor), // Display the bank charges with 2 decimal places
+                  _buildRow('Total Amount', (amount + bankCharges()).toStringAsFixed(2),Colors.white), // Display total amount (sum of amount and bank charges)
 
                 ],
               ),
@@ -180,23 +185,25 @@ class ConfirmPaymentScreen extends StatelessWidget {
                       Navigator.push(
                           context,
                           MaterialPageRoute(
-                          builder: (context) =>   SendMoneyScreen(beneficiaryName: beneficiaryName, accountNumber: accountNumber, bankLogo: bankLogo, bankName: bankName)));
+                          builder: (context) =>   SendMoneyScreen(beneficiaryName: beneficiaryName,
+                              accountNumber: accountNumber, bankLogo: bankLogo, bankName: bankName)));
                     },
                     style: ElevatedButton.styleFrom(
-                      backgroundColor: Colors.grey,
+                      backgroundColor: Colors.white,
                     ),
-                    child: Text('Cancel'),
+                    child: Text('Cancel', style: TextStyle(color: Colors.black,)),
                   ),
                 ),
                 SizedBox(width: 8.0),
                 Expanded(
                   child: ElevatedButton(
                     onPressed: () {
-                     /* print("Amount: ${amount.toStringAsFixed(2)}"); // Converts amount to String with 2 decimal places
-                      print("Bank Charges: ${bankCharges().toStringAsFixed(2)}"); // Converts bankCharges() to String with 2 decimal places
-                      String amnt = (amount + bankCharges()).toStringAsFixed(2);
-                      print("Bank Charges: $amnt");
-*/
+
+                      Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) =>   PaymentConfirmationScreen(nickname: beneficiaryName,
+                                  accountNumber: accountNumber, bankLogo: bankLogo, bankName: bankName, amount: amount)));
 
 
                     },
@@ -214,7 +221,7 @@ class ConfirmPaymentScreen extends StatelessWidget {
     );
   }
 
-  Widget _buildRow(String title, String value) {
+  Widget _buildRow(String title, String value,Color textColor) {
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 4.0),
       child: Row(
@@ -222,11 +229,11 @@ class ConfirmPaymentScreen extends StatelessWidget {
         children: [
           Text(
             title,
-            style: TextStyle(color: Colors.white),
+            style: TextStyle(color: textColor,fontSize: 17),
           ),
           Text(
             value,
-            style: TextStyle(color: Colors.white),
+            style: TextStyle(color: textColor,fontSize: 17),
           ),
         ],
       ),
