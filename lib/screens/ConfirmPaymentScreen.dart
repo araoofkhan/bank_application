@@ -1,4 +1,5 @@
 import 'package:bank_application/resources/colors.dart';
+import 'package:bank_application/screens/sendmoneyscreen.dart';
 import 'package:flutter/material.dart';
 
 import 'DashBoardScreen.dart';
@@ -24,7 +25,7 @@ class ConfirmPaymentScreen extends StatelessWidget {
   //  double numericAmount = double.tryParse(amount) ?? 0.0; // Convert amount to double
 
     if (amount > 50000) {
-      charges = 0.001 * amount;
+      charges = 0.002 * amount;
 
     } else {
     charges=0;
@@ -38,13 +39,17 @@ class ConfirmPaymentScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Send Money'),
+        title: Text('Send Money',style: TextStyle(color:AppColors.yellowcolor),),
         backgroundColor: Colors.purple,
+
         actions: [
           IconButton(
             icon: Icon(Icons.home, color: AppColors.yellowcolor),
             onPressed: () {
-              // Handle home button action
+              Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                  builder: (context) => DashBoardScreen()));
             },
           ),
           IconButton(
@@ -172,6 +177,10 @@ class ConfirmPaymentScreen extends StatelessWidget {
                   child: ElevatedButton(
                     onPressed: () {
                       // Handle cancel action
+                      Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                          builder: (context) =>   SendMoneyScreen(beneficiaryName: beneficiaryName, accountNumber: accountNumber, bankLogo: bankLogo, bankName: bankName)));
                     },
                     style: ElevatedButton.styleFrom(
                       backgroundColor: Colors.grey,

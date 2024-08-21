@@ -168,8 +168,13 @@ class _SendMoneyScreenState extends State<SendMoneyScreen> {
           ),
           actions: [
             IconButton(
-              icon: const Icon(Icons.home, color: AppColors.yellowcolor),
-              onPressed: () {},
+              icon: Icon(Icons.home, color: AppColors.yellowcolor),
+              onPressed: () {
+                Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) => DashBoardScreen()));
+              },
             ),
             IconButton(
               icon: const Icon(Icons.notifications, color: AppColors.yellowcolor),

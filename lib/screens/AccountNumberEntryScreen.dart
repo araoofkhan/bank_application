@@ -3,6 +3,7 @@ import 'package:fluttertoast/fluttertoast.dart';
 import 'package:bank_application/resources/colors.dart';
 import '../models/BankModel.dart';
 import 'AddNickNameScreen.dart';
+import 'DashBoardScreen.dart';
 
 
 class AccountNumberEntryScreen extends StatefulWidget {
@@ -54,10 +55,12 @@ class _AccountNumberEntryScreenState extends State<AccountNumberEntryScreen> {
         ),
         actions: [
           IconButton(
-            icon: const Icon(Icons.home),
-            color: AppColors.yellowcolor,
+            icon: Icon(Icons.home, color: AppColors.yellowcolor),
             onPressed: () {
-              // Home action
+              Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                      builder: (context) => DashBoardScreen()));
             },
           ),
           IconButton(

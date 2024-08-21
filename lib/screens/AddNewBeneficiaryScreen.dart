@@ -4,6 +4,8 @@ import 'package:bank_application/BankRepository.dart';
 import 'package:bank_application/resources/colors.dart';
 import 'package:bank_application/screens/AccountNumberEntryScreen.dart';
 
+import 'DashBoardScreen.dart';
+
 class AddNewBeneficiaryScreen extends StatefulWidget {
   @override
   _AddNewBeneficiaryScreenState createState() => _AddNewBeneficiaryScreenState();
@@ -45,10 +47,12 @@ class _AddNewBeneficiaryScreenState extends State<AddNewBeneficiaryScreen> {
         ),
         actions: [
           IconButton(
-            icon: const Icon(Icons.home),
-            color: AppColors.yellowcolor,
+            icon: Icon(Icons.home, color: AppColors.yellowcolor),
             onPressed: () {
-              // Home action
+              Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                      builder: (context) => DashBoardScreen()));
             },
           ),
           IconButton(

@@ -4,6 +4,8 @@ import 'package:flutter/material.dart';
 import 'package:bank_application/widgets/BeneficiaryList.dart';
 import 'package:bank_application/screens/AddNewBeneficiaryScreen.dart';
 
+import 'DashBoardScreen.dart';
+
 
 
 
@@ -26,10 +28,12 @@ class MoneyTransferScreen extends StatelessWidget {
         ),
         actions: [
           IconButton(
-            icon: const Icon(Icons.home),
-            color: Color(0xFFFFD400),
+            icon: Icon(Icons.home, color: AppColors.yellowcolor),
             onPressed: () {
-              // Home action
+              Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                      builder: (context) => DashBoardScreen()));
             },
           ),
           IconButton(
