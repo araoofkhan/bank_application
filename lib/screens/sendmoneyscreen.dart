@@ -1,5 +1,6 @@
 import 'package:bank_application/screens/ConfirmPaymentScreen.dart';
 import 'package:bank_application/screens/DashBoardScreen.dart';
+import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import '../resources/colors.dart';
@@ -10,10 +11,12 @@ class SendMoneyScreen extends StatefulWidget {
   final String accountNumber;
   final String bankLogo;
   final String bankName;
+
   SendMoneyScreen({
     required this.beneficiaryName,
     required this.accountNumber,
-    required this.bankLogo, required this.bankName,
+    required this.bankLogo,
+    required this.bankName,
   });
 
   @override
@@ -30,24 +33,66 @@ class _SendMoneyScreenState extends State<SendMoneyScreen> {
   String formattedUpdatedBalance = '';
   FocusNode _focusNode = FocusNode();
 
+  final DatabaseReference _balanceRef = FirebaseDatabase.instance.ref().child('accountHolder/balance');
+
+
   @override
   void initState() {
     super.initState();
-
-    // Example initial value, update accordingly
-    final String formattedAmount = formatAmount(balance); // Ensure formatAmount is implemented correctly
-    _initialBalance = double.tryParse(formattedAmount.replaceAll(',', '')) ?? 0.0;
-    _updatedBalance = _initialBalance;
-
-    formattedInitialBalance = formatAmount(_initialBalance);
-    formattedUpdatedBalance = formatAmount(_updatedBalance);
 
     _amountController = TextEditingController();
     _amountController.addListener(_updateBalance);
     WidgetsBinding.instance.addPostFrameCallback((_) {
       _focusNode.unfocus();
     });
+
+    _fetchBalanceFromFirebase();
   }
+
+  Future<void> _fetchBalanceFromFirebase() async {
+    try {
+      // Fetch the snapshot from Firebase
+      final snapshot = await _balanceRef.get();
+
+      // Check if the snapshot has data
+      if (snapshot.exists) {
+        // Directly parse the snapshot value to double
+        _initialBalance = double.tryParse(snapshot.value.toString()) ?? 0.0;
+        _updatedBalance = _initialBalance;
+
+        // Update the state with formatted values for display
+        setState(() {
+          formattedInitialBalance = formatAmount(_initialBalance); // Format only for display
+          formattedUpdatedBalance = formatAmount(_updatedBalance);
+        });
+
+        // Display success message
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text('Balance fetched successfully: $formattedInitialBalance'),
+            backgroundColor: Colors.green,
+          ),
+        );
+      } else {
+        // Display message if no data found
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text('No balance data found in Firebase.'),
+            backgroundColor: Colors.orange,
+          ),
+        );
+      }
+    } catch (e) {
+      // Display error message
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text('Error fetching balance: $e'),
+          backgroundColor: Colors.red,
+        ),
+      );
+    }
+  }
+
 
   @override
   void dispose() {

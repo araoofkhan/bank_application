@@ -18,9 +18,14 @@ void main() async {
       )
   );
   runApp(MyApp());
-
-
 }
+/*void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await Firebase.initializeApp();
+  runApp(MyApp());
+}*/
+
+
 
 
 class MyApp extends StatelessWidget {

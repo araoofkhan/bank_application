@@ -1,4 +1,5 @@
 import 'package:bank_application/resources/colors.dart';
+import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:bank_application/screens/MoneyTransferScreen.dart';
@@ -6,23 +7,59 @@ import 'package:bank_application/widgets/CustomBottomAppBar.dart';
 
 
 // Global function to format currency
-String formatAmount(double amount) {
-  final NumberFormat currencyFormat = NumberFormat.currency(locale: 'en_US', symbol: '');
-  return currencyFormat.format(amount);
-}
-double balance=5000000;
-// Global variable for formatted amount
-String formattedAmount = formatAmount(balance);
-String accountHolderName = 'ABDUL RAOOF';
-String accountHolderaccountNmber='Current-96010102876644';
-class DashBoardScreen extends StatefulWidget {
-  const DashBoardScreen({super.key});
 
+
+// Global variables for account information
+double balance = 0.0;
+String formattedAmount = '';
+String accountHolderName = '';
+String accountHolderAccountNumber = '';
+String branchname = '';
+
+String formatAmount(double amount) {
+  final formatter = NumberFormat('#,#,###.##', 'en_US');
+  return formatter.format(amount);
+}
+
+
+
+class DashBoardScreen extends StatefulWidget {
   @override
-  State<DashBoardScreen> createState() => _DashBoardScreenState();
+  _DashBoardScreenState createState() => _DashBoardScreenState();
 }
 
 class _DashBoardScreenState extends State<DashBoardScreen> {
+  bool isLoading = true;
+
+  @override
+  void initState() {
+    super.initState();
+    _fetchAccountHolderInfo();
+  }
+
+  Future<void> _fetchAccountHolderInfo() async {
+    DatabaseReference ref = FirebaseDatabase.instance.ref().child('accountHolder');
+    final snapshot = await ref.get();
+
+    if (snapshot.exists) {
+      setState(() {
+        balance = double.parse(snapshot.child('balance').value.toString());
+        accountHolderName = snapshot.child('name').value.toString();
+        accountHolderAccountNumber = snapshot.child('accountNumber').value.toString();
+        branchname = snapshot.child('branch').value.toString(); // Fetching branch info
+        formattedAmount = formatAmount(balance);
+        isLoading = false;
+      });
+    } else {
+      setState(() {
+        isLoading = false;
+      });
+      print('No account holder data found');
+    }
+  }
+
+
+
   @override
   Widget build(BuildContext context) {
 
@@ -109,7 +146,7 @@ class _DashBoardScreenState extends State<DashBoardScreen> {
                   const SizedBox(height: 5.0), // Add spacing between texts
                   Center(
                     child: Text(
-                      accountHolderaccountNmber,
+                      accountHolderAccountNumber,
                       style: TextStyle(
                         color: Colors.black,
                         fontFamily: 'CustomFont',
@@ -117,9 +154,9 @@ class _DashBoardScreenState extends State<DashBoardScreen> {
                       ),
                     ),
                   ),
-                  const Center(
+                   Center(
                     child: Text(
-                      'Taunsa Branch, Dera Ghazi Khan',
+                      branchname,
                       style: TextStyle(
                         color: Colors.black,
                         fontFamily: 'CustomFont',

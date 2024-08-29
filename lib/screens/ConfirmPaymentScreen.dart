@@ -1,15 +1,17 @@
 import 'dart:ui';
 
 import 'package:bank_application/resources/colors.dart';
-import 'package:bank_application/screens/sendmoneyscreen.dart';
+import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
-import 'package:screenshot/screenshot.dart';
-import 'package:image_gallery_saver/image_gallery_saver.dart';
-
 import 'DashBoardScreen.dart';
 import 'PaymentConfirmationScreen.dart';
 
-class ConfirmPaymentScreen extends StatelessWidget {
+final DatabaseReference _balanceRef = FirebaseDatabase.instance
+    .ref()
+    .child('accountHolder')
+    .child('balance');
+
+class ConfirmPaymentScreen extends StatefulWidget {
   final double amount;
   final String beneficiaryName;
   final String bankLogo;
@@ -24,37 +26,100 @@ class ConfirmPaymentScreen extends StatelessWidget {
     required this.bankName,
   });
 
-  double bankCharges() {
-    double charges = 0.0;
+  @override
+  _ConfirmPaymentScreenState createState() => _ConfirmPaymentScreenState();
+}
 
-  //  double numericAmount = double.tryParse(amount) ?? 0.0; // Convert amount to double
+class _ConfirmPaymentScreenState extends State<ConfirmPaymentScreen> {
 
-    if (amount > 50000) {
-      charges = 0.002 * amount;
 
-    } else {
-    charges=0;
+  Future<void> _updateBalance() async {
+    print('Initiating balance update...');
+    try {
+      // Verify if the reference is correct
+      print('Reference path: ${_balanceRef.path}');
+
+      // Fetch the current balance
+      final snapshot = await _balanceRef.get();
+      print('Snapshot fetched: ${snapshot.value}');
+
+      if (snapshot.exists) {
+        // Parse and log the current balance
+        double currentBalance = double.tryParse(snapshot.value.toString()) ?? 0.0;
+        print('Current balance is: $currentBalance');
+
+        // Calculate charges and new balance
+        double charges = _calculateBankCharges();
+        print('Bank charges calculated: $charges');
+        double newBalance = currentBalance - widget.amount - charges;
+        print('Calculated new balance: $newBalance');
+
+        // Update the balance in Firebase
+        await _balanceRef.set(newBalance);
+        print('Balance successfully updated to: $newBalance');
+      } else {
+        // Log error if the balance data is missing
+        print('Error: Balance snapshot does not exist.');
+        _showErrorDialog(context, 'Error', 'Unable to fetch balance.');
+      }
+    } catch (e) {
+      // Log the specific error for further inspection
+      print('Exception occurred: $e');
+      _showErrorDialog(context, 'Error', 'An error occurred while updating balance.');
     }
-
-    return charges;
   }
 
 
+
+
+  void _showErrorDialog(BuildContext context, String title, String message) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text(title),
+          content: Text(message),
+          actions: <Widget>[
+            TextButton(
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+              child: Text('OK'),
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+  // Function to calculate bank charges
+  double _calculateBankCharges() {
+    return widget.amount > 50000 ? 0.002 * widget.amount : 0.0;
+  }
+
+  void _onSendMoneyPressed() async {
+    print('updateBalance method called');
+    await _updateBalance();
+    Navigator.push(
+        context,
+        MaterialPageRoute(
+            builder: (context) =>   PaymentConfirmationScreen(nickname: widget.beneficiaryName,
+                accountNumber: widget.accountNumber, bankLogo: widget.bankLogo, bankName: widget.bankName, amount: widget.amount)));
+  }
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Send Money',style: TextStyle(color:AppColors.yellowcolor),),
+        title: Text('Send Money', style: TextStyle(color: AppColors.yellowcolor)),
         backgroundColor: Colors.purple,
-
         actions: [
           IconButton(
             icon: Icon(Icons.home, color: AppColors.yellowcolor),
             onPressed: () {
               Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                  builder: (context) => DashBoardScreen()));
+                context,
+                MaterialPageRoute(builder: (context) => DashBoardScreen()),
+              );
             },
           ),
           IconButton(
@@ -95,7 +160,7 @@ class ConfirmPaymentScreen extends StatelessWidget {
               child: Row(
                 children: [
                   Image.asset(
-                    'lib/resources/banklogo/meezan.png', // Use bankLogo to dynamically load the image
+                    widget.bankLogo,
                     width: 40.0,
                     height: 40.0,
                   ),
@@ -104,7 +169,7 @@ class ConfirmPaymentScreen extends StatelessWidget {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
-                        accountHolderName, // Replace with actual global or passed value
+                        'Account Holder Name', // Replace with actual account holder name
                         style: TextStyle(
                           fontSize: 18,
                           fontWeight: FontWeight.bold,
@@ -112,7 +177,7 @@ class ConfirmPaymentScreen extends StatelessWidget {
                         ),
                       ),
                       Text(
-                        accountHolderaccountNmber, // Replace with actual global or passed value
+                        'Account Number', // Replace with actual account holder account number
                         style: TextStyle(
                           fontSize: 18,
                           fontFamily: 'CustomFont',
@@ -142,10 +207,10 @@ class ConfirmPaymentScreen extends StatelessWidget {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  _buildRow('Account Number', accountNumber,Colors.white),
-                  _buildRow('Account Title', beneficiaryName,Colors.white),
-                  _buildRow('Bank Name', bankName,Colors.white),
-                  _buildRow('Branch', '',Colors.white), // Add branch info if available
+                  _buildRow('Account Number', widget.accountNumber, Colors.white),
+                  _buildRow('Account Title', widget.beneficiaryName, Colors.white),
+                  _buildRow('Bank Name', widget.bankName, Colors.white),
+                  _buildRow('Branch', '', Colors.white), // Add branch info if available
                 ],
               ),
             ),
@@ -168,10 +233,9 @@ class ConfirmPaymentScreen extends StatelessWidget {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  _buildRow('Amount', amount.toStringAsFixed(2),Colors.white), // Display the amount with 2 decimal places
-                  _buildRow('Bank Charges', bankCharges().toStringAsFixed(2),AppColors.yellowcolor), // Display the bank charges with 2 decimal places
-                  _buildRow('Total Amount', (amount + bankCharges()).toStringAsFixed(2),Colors.white), // Display total amount (sum of amount and bank charges)
-
+                  _buildRow('Amount', widget.amount.toStringAsFixed(2), Colors.white),
+                  _buildRow('Bank Charges', _calculateBankCharges().toStringAsFixed(2), AppColors.yellowcolor),
+                  _buildRow('Total Amount', (widget.amount + _calculateBankCharges()).toStringAsFixed(2), Colors.white),
                 ],
               ),
             ),
@@ -182,29 +246,19 @@ class ConfirmPaymentScreen extends StatelessWidget {
                   child: ElevatedButton(
                     onPressed: () {
                       // Handle cancel action
-                      Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                          builder: (context) =>   SendMoneyScreen(beneficiaryName: beneficiaryName,
-                              accountNumber: accountNumber, bankLogo: bankLogo, bankName: bankName)));
+
                     },
                     style: ElevatedButton.styleFrom(
                       backgroundColor: Colors.white,
                     ),
-                    child: Text('Cancel', style: TextStyle(color: Colors.black,)),
+                    child: Text('Cancel', style: TextStyle(color: Colors.black)),
                   ),
                 ),
                 SizedBox(width: 8.0),
                 Expanded(
                   child: ElevatedButton(
                     onPressed: () {
-
-                      Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                              builder: (context) =>   PaymentConfirmationScreen(nickname: beneficiaryName,
-                                  accountNumber: accountNumber, bankLogo: bankLogo, bankName: bankName, amount: amount)));
-
+                      _onSendMoneyPressed();
 
                     },
                     style: ElevatedButton.styleFrom(
@@ -221,7 +275,7 @@ class ConfirmPaymentScreen extends StatelessWidget {
     );
   }
 
-  Widget _buildRow(String title, String value,Color textColor) {
+  Widget _buildRow(String title, String value, Color textColor) {
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 4.0),
       child: Row(
@@ -229,11 +283,11 @@ class ConfirmPaymentScreen extends StatelessWidget {
         children: [
           Text(
             title,
-            style: TextStyle(color: textColor,fontSize: 17),
+            style: TextStyle(color: textColor, fontSize: 17),
           ),
           Text(
             value,
-            style: TextStyle(color: textColor,fontSize: 17),
+            style: TextStyle(color: textColor, fontSize: 17),
           ),
         ],
       ),

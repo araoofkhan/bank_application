@@ -27,11 +27,20 @@ class PaymentConfirmationScreen extends StatefulWidget {
 
   @override
   _PaymentConfirmationScreenState createState() => _PaymentConfirmationScreenState();
+
 }
 class _PaymentConfirmationScreenState extends State<PaymentConfirmationScreen> {
   final ScreenshotController _screenshotController = ScreenshotController();
+
+  @override
+  void initState() {
+    super.initState();
+  }
+
   @override
   Widget build(BuildContext context) {
+    // Access amount via widget.amount
+    final formattedAmount = formatAmount(widget.amount);
     final String formattedDate = DateFormat('dd-MM-yyyy – HH:mm').format(DateTime.now());
     final String transactionId = _generateTransactionId();
     return Scaffold(
@@ -73,11 +82,11 @@ class _PaymentConfirmationScreenState extends State<PaymentConfirmationScreen> {
               Text('Transaction Successful', style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold, color: Colors.white)),
               SizedBox(height: 10),
               Text(accountHolderName.toUpperCase(), style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold, color: Colors.white)),
-              Text(accountHolderaccountNmber, style: TextStyle(fontSize: 16, color: Colors.white)),
+              Text(accountHolderAccountNumber, style: TextStyle(fontSize: 16, color: Colors.white)),
               SizedBox(height: 10),
               Text('Money Transferred', style: TextStyle(fontSize: 20, color: Colors.white)),
               SizedBox(height: 10),
-              Text('Rs. ${widget.amount.toStringAsFixed(2)}', style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold, color: Colors.amber)),
+              Text('Rs. ${formattedAmount}', style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold, color: Colors.amber)),
               SizedBox(height: 10),
               Text('to', style: TextStyle(fontSize: 16, color: Colors.white)),
               Text('${widget.nickname} - Account Number: ${widget.accountNumber.substring(0, 4)}*****${widget.accountNumber.substring(widget.accountNumber.length - 4)}', style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold, color: Colors.white)),
