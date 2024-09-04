@@ -4,6 +4,7 @@ import 'package:firebase_database/firebase_database.dart';
 import 'package:bank_application/models/Beneficiary.dart';
 import 'package:connectivity_plus/connectivity_plus.dart';
 
+import '../resources/colors.dart';
 import '../screens/sendmoneyscreen.dart';
 
 class BeneficiaryList extends StatefulWidget {
@@ -181,17 +182,17 @@ class _BeneficiaryListState extends State<BeneficiaryList> {
                   ),
                   title: Text(
                     beneficiary.nickname.isEmpty ? beneficiary.bankName : beneficiary.nickname,
-                    style: TextStyle(color: Colors.white),
+                    style: TextStyle(color: AppColors.yellowcolor,fontSize:18,fontWeight:FontWeight.bold),
                   ),
                   subtitle: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       if (beneficiary.accountNumber.isNotEmpty)
-                        Text('Account Number: ${beneficiary.accountNumber}', style: TextStyle(color: Colors.white)),
+                        Text('Account Number: ${beneficiary.accountNumber}', style: TextStyle(color: Colors.white,fontSize:16)),
                       if (beneficiary.bankName.isNotEmpty)
-                        Text('Bank Name: ${beneficiary.bankName}', style: TextStyle(color: Colors.white)),
+                        Text('Bank Name: ${beneficiary.bankName}', style: TextStyle(color: Colors.white,fontSize: 16)),
                       if (beneficiary.nickname.isNotEmpty)
-                        Text('Nickname: ${beneficiary.nickname}', style: TextStyle(color: Colors.white)),
+                        Text('Nickname: ${beneficiary.nickname}', style: TextStyle(color: Colors.white,fontSize: 16)),
                       Divider(color: Colors.white),
                     ],
                   ),

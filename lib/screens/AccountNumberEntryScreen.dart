@@ -121,7 +121,7 @@ class _AccountNumberEntryScreenState extends State<AccountNumberEntryScreen> {
 
                 ),
                 style: TextStyle(color: Colors.white,fontSize:20,fontFamily: 'CustomFont'),
-                keyboardType: TextInputType.number,
+               // keyboardType: TextInputType.number,
               ),
             ),
             const Divider(color: Colors.grey),

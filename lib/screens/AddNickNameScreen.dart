@@ -8,7 +8,8 @@ import 'package:bank_application/screens/DashBoardScreen.dart';
 
 
 
-import '../models/Beneficiary.dart'; // For AddNewBeneficiaryScreen
+import '../models/Beneficiary.dart';
+import 'BeneficiarySuccessfullyAddedScreen.dart'; // For AddNewBeneficiaryScreen
 
 
 class AddNicknameScreen extends StatefulWidget {
@@ -56,9 +57,20 @@ class _AddNicknameScreenState extends State<AddNicknameScreen> {
         toastLength: Toast.LENGTH_SHORT,
         gravity: ToastGravity.CENTER,
         backgroundColor: Colors.white,
-        textColor: Colors.black,
+        textColor: Colors.black,);
+      Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (context) => BeneficiarySuccessfullyAddedScreen(
+            bankModel: widget.bank,
+            nickname: _nicknameController.text, // Pass the nickname here
+          ),
+        ),
       );
-    }).catchError((error) {
+
+    }
+
+      ).catchError((error) {
       print('Failed to add beneficiary: $error');
       Fluttertoast.showToast(
         msg: "Error saving details",
@@ -163,7 +175,7 @@ class _AddNicknameScreenState extends State<AddNicknameScreen> {
                   "Confirm following beneficiary details",
                   style: TextStyle(
                     color: AppColors.yellowcolor,
-                    fontSize: 16,
+                    fontSize: 18,
                     fontFamily: 'CustomFont',
                   ),
                 ),
@@ -184,7 +196,7 @@ class _AddNicknameScreenState extends State<AddNicknameScreen> {
                           "Account Number:",
                           style: TextStyle(
                             color: Colors.white,
-                            fontSize: 16,
+                            fontSize: 18,
                             fontFamily: 'CustomFont',
                           ),
                         ),
@@ -193,7 +205,7 @@ class _AddNicknameScreenState extends State<AddNicknameScreen> {
                           widget.accountNumber,
                           style: TextStyle(
                             color: Colors.white,
-                            fontSize: 16,
+                            fontSize: 18,
                             fontFamily: 'CustomFont',
                           ),
                         ),
@@ -209,7 +221,7 @@ class _AddNicknameScreenState extends State<AddNicknameScreen> {
                           "Account Title:",
                           style: TextStyle(
                             color: Colors.white,
-                            fontSize: 16,
+                            fontSize: 18,
                             fontFamily: 'CustomFont',
                           ),
                         ),
@@ -218,7 +230,7 @@ class _AddNicknameScreenState extends State<AddNicknameScreen> {
                           "Account Title Here", // Replace with actual account title
                           style: TextStyle(
                             color: Colors.white,
-                            fontSize: 16,
+                            fontSize: 18,
                             fontFamily: 'CustomFont',
                           ),
                         ),
@@ -234,7 +246,7 @@ class _AddNicknameScreenState extends State<AddNicknameScreen> {
                           "Bank Name:",
                           style: TextStyle(
                             color: Colors.white,
-                            fontSize: 16,
+                            fontSize: 18,
                             fontFamily: 'CustomFont',
                           ),
                         ),
@@ -243,7 +255,7 @@ class _AddNicknameScreenState extends State<AddNicknameScreen> {
                           widget.bank.bankName,
                           style: TextStyle(
                             color: Colors.white,
-                            fontSize: 16,
+                            fontSize: 18,
                             fontFamily: 'CustomFont',
                           ),
                         ),
@@ -259,7 +271,7 @@ class _AddNicknameScreenState extends State<AddNicknameScreen> {
                           "Branch:",
                           style: TextStyle(
                             color: Colors.white,
-                            fontSize: 16,
+                            fontSize: 18,
                             fontFamily: 'CustomFont',
                           ),
                         ),
@@ -268,7 +280,7 @@ class _AddNicknameScreenState extends State<AddNicknameScreen> {
                           "Branch Name Here", // Replace with actual branch name
                           style: TextStyle(
                             color: Colors.white,
-                            fontSize: 16,
+                            fontSize: 18,
                             fontFamily: 'CustomFont',
                           ),
                         ),
@@ -282,14 +294,14 @@ class _AddNicknameScreenState extends State<AddNicknameScreen> {
               child: SingleChildScrollView(
                 child: Column(
                   children: [
-                    SizedBox(height: 5),
+                    SizedBox(height: 10),
                     Container(
                       margin: const EdgeInsets.only(left: 20.0),
                       child: TextField(
                         controller: _nicknameController,
                         style: TextStyle(
                           color: Colors.white,
-                          fontSize: 16,
+                          fontSize: 20,
                           fontFamily: 'CustomFont',
                         ),
                         decoration: InputDecoration(
@@ -308,41 +320,60 @@ class _AddNicknameScreenState extends State<AddNicknameScreen> {
                     SizedBox(height: 5),
                     Container(
                       width: double.infinity,
-                      color: AppColors.yellowcolor,
+                     // color: AppColors.yellowcolor,
                       padding: EdgeInsets.symmetric(vertical: 15.0),
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.spaceAround,
                         children: [
-                          InkWell(
-                            onTap: () {
-                              // Navigate back to the previous screen
-                              Navigator.pop(context);
-                            },
-                            child: Text(
-                              "Cancel",
-                              style: TextStyle(
-                                color: Colors.white,
-                                fontSize: 16,
-                                fontFamily: 'CustomFont',
+                          Expanded(
+                            child: ElevatedButton(
+                              onPressed: () {
+                                // Navigate back to the previous screen
+                                Navigator.pop(context);
+                              },
+                              style: ElevatedButton.styleFrom(
+                                backgroundColor: AppColors.yellowcolor, // Match the container color
+                                padding: EdgeInsets.symmetric(vertical: 15), // Adjust padding as needed
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.zero, // Square corners
+                                ),
+                              ),
+                              child: Text(
+                                "Cancel",
+                                style: TextStyle(
+                                  color: Colors.white,
+                                  fontSize: 16,
+                                  fontFamily: 'CustomFont',
+                                ),
                               ),
                             ),
                           ),
-                          SizedBox(width: 20),
-                          InkWell(
-                            onTap:
-                                _saveToFirebase, // Call the method to save details
-                            child: Text(
-                              "Next",
-                              style: TextStyle(
-                                color: Colors.white,
-                                fontSize: 16,
-                                fontFamily: 'CustomFont',
+                          SizedBox(width: 10), // Space between buttons
+                          Expanded(
+                            child: ElevatedButton(
+                              onPressed: _saveToFirebase, // Call the method to save details
+                              style: ElevatedButton.styleFrom(
+                                backgroundColor: AppColors.yellowcolor, // Match the container color
+                                padding: EdgeInsets.symmetric(vertical: 15), // Adjust padding as needed
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.zero, // Square corners
+                                ),
+                              ),
+                              child: Text(
+                                "Next",
+                                style: TextStyle(
+                                  color: Colors.white,
+                                  fontSize: 16,
+                                  fontFamily: 'CustomFont',
+                                ),
                               ),
                             ),
                           ),
                         ],
                       ),
                     ),
+
+
                   ],
                 ),
               ),

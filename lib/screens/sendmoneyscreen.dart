@@ -346,7 +346,7 @@ class _SendMoneyScreenState extends State<SendMoneyScreen> {
                             child: ElevatedButton(
                               style: ElevatedButton.styleFrom(
                                 backgroundColor: AppColors.primarycolor,
-                                padding: EdgeInsets.symmetric(vertical: 16.0),
+                                padding: EdgeInsets.symmetric(vertical: 1.0),
                               ),
                               onPressed: () {
                                 FocusScope.of(context).unfocus();

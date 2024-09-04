@@ -118,7 +118,7 @@ class MoneyTransferScreen extends StatelessWidget {
             const SizedBox(width: 15),
             Text(
               text,
-              style: TextStyle(color: AppColors.yellowcolor, fontSize: 16, fontFamily: 'CustomFont'),
+              style: TextStyle(color: AppColors.yellowcolor, fontSize: 18, fontFamily: 'CustomFont'),
             ),
           ],
         ),
