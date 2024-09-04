@@ -17,7 +17,7 @@ String accountHolderAccountNumber = '';
 String branchname = '';
 
 String formatAmount(double amount) {
-  final formatter = NumberFormat('#,#,###.##', 'en_US');
+  final formatter = NumberFormat('##,###.##', 'en_US');
   return formatter.format(amount);
 }
 
@@ -224,7 +224,7 @@ class _DashBoardScreenState extends State<DashBoardScreen> {
                                       Navigator.push(
                                         context,
                                         MaterialPageRoute(
-                                          builder: (context) => MoneyTransferScreen(formattedAmount: formattedAmount),
+                                          builder: (context) => MoneyTransferScreen(),
                                         ),
                                       );
                                       print('Send Money tapped');

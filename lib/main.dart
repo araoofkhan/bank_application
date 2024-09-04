@@ -1,6 +1,8 @@
+import 'package:bank_application/screens/DashBoardScreen.dart';
+import 'package:bank_application/screens/MoneyTransferScreen.dart';
 import 'package:flutter/material.dart';
 
-import 'MoneyTransferScreen.dart';
+
 import 'resources/colors.dart'; // Import the colors.dart file
 
 void main() {
@@ -20,7 +22,7 @@ class MyApp extends StatelessWidget {
 
         useMaterial3: true,
       ),
-      home: const MoneyTransferScreen(), // Use the corrected class name
+      home:  DashBoardScreen(), // Use the corrected class name
     );
   }
 }

@@ -3,12 +3,14 @@ import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
  import 'package:bank_application/resources/colors.dart';
+// Example usage in your screen
+import 'package:flutter/material.dart';
+import 'package:bank_application/screens/CustomAppBar.dart';
 
 import 'package:bank_application/screens/DashBoardScreen.dart';
 
-
-
-import '../models/Beneficiary.dart'; // For AddNewBeneficiaryScreen
+import 'BeneficiarySuccessfullyAddedScreen.dart';
+import 'ToastUtil.dart'; // For AddNewBeneficiaryScreen
 
 
 class AddNicknameScreen extends StatefulWidget {
@@ -27,95 +29,67 @@ class _AddNicknameScreenState extends State<AddNicknameScreen> {
       FirebaseDatabase.instance.ref().child('Bank_Accounts');
 
 
-  void _saveToFirebase() {
-
+  void _saveToFirebase() async {
+    // Check if nickname is empty
     if (_nicknameController.text.isEmpty) {
-      Fluttertoast.showToast(
-        msg: "Nickname cannot be empty",
-        toastLength: Toast.LENGTH_SHORT,
-        gravity: ToastGravity.CENTER,
-        backgroundColor: Colors.white,
-        textColor: Colors.black,
+      ToastUtil.showToast(
+        context: context,
+        message: "Nickname cannot be empty",
       );
       return;
     }
 
-    _dbRef.push().set({
-      'bank_name': widget.bank.bankName,
-      'bank_logo': widget.bank.bankLogo,
-      'account_number': widget.accountNumber,
-      'nickname': _nicknameController.text,
-      //'account_title':
-        //  "Account Title Here", // Replace with actual account title
-      //'branch_name': "Branch Name Here", // Replace with actual branch name
+    try {
+      // Query Firebase to check if account number already exists
+      final querySnapshot = await _dbRef.orderByChild('account_number').equalTo(widget.accountNumber).get();
 
-    }).then((_) {
+      if (querySnapshot.exists) {
+        // Account number already exists
+        ToastUtil.showToast(
+          context: context,
+          message: "Account number already exists",
+        );
+        return;;
+      }
+
+      // Proceed to save new account details
+      await _dbRef.push().set({
+        'bank_name': widget.bank.bankName,
+        'bank_logo': widget.bank.bankLogo,
+        'account_number': widget.accountNumber,
+        'nickname': _nicknameController.text,
+        // Add any other fields as needed
+      });
+
       print('Beneficiary added successfully');
-      Fluttertoast.showToast(
-        msg: "Account details saved",
-        toastLength: Toast.LENGTH_SHORT,
-        gravity: ToastGravity.CENTER,
-        backgroundColor: Colors.white,
-        textColor: Colors.black,
+      ToastUtil.showToast(
+        context: context,
+        message: "Beneficiary added successfully",
       );
-    }).catchError((error) {
+      Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (context) => BeneficiarySuccessfullyAddedScreen(
+            bankModel: widget.bank,
+            nickname: _nicknameController.text,
+            account_number: widget.accountNumber,
+          ),
+        ),
+      );
+    } catch (error) {
       print('Failed to add beneficiary: $error');
-      Fluttertoast.showToast(
-        msg: "Error saving details",
-        toastLength: Toast.LENGTH_SHORT,
-        gravity: ToastGravity.CENTER,
-        backgroundColor: Colors.white,
-        textColor: Colors.black,
+      ToastUtil.showToast(
+        context: context,
+        message: "Failed to save Beneficiary",
       );
-    });
+    }
   }
+
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        backgroundColor: AppColors.primarycolor,
-        title: Text(
-          "Send Money",
-          style: TextStyle(
-            color: Colors.white,
-            fontFamily: 'CustomFont',
-            fontSize: 20,
-          ),
-        ),
-        actions: [
-          IconButton(
-            icon: Icon(Icons.home),
-            color: AppColors.yellowcolor,
-            onPressed: () {
-              onTap:
-              () {
-                print('Home icon pressed');
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => DashBoardScreen(),
-                  ),
-                );
-              };
-            },
-          ),
-          IconButton(
-            icon: Icon(Icons.notifications),
-            color: AppColors.yellowcolor,
-            onPressed: () {
-              // Handle notifications
-            },
-          ),
-          IconButton(
-            icon: Icon(Icons.power_settings_new_sharp),
-            color: AppColors.yellowcolor,
-            onPressed: () {
-              // Handle logout
-            },
-          ),
-        ],
-      ),
+      appBar: CustomAppBar(title: "Send Money"),
       body: Container(
         color: Colors.black,
         child: Column(
@@ -163,7 +137,7 @@ class _AddNicknameScreenState extends State<AddNicknameScreen> {
                   "Confirm following beneficiary details",
                   style: TextStyle(
                     color: AppColors.yellowcolor,
-                    fontSize: 16,
+                    fontSize: 18,
                     fontFamily: 'CustomFont',
                   ),
                 ),
@@ -184,7 +158,7 @@ class _AddNicknameScreenState extends State<AddNicknameScreen> {
                           "Account Number:",
                           style: TextStyle(
                             color: Colors.white,
-                            fontSize: 16,
+                            fontSize: 18,
                             fontFamily: 'CustomFont',
                           ),
                         ),
@@ -193,7 +167,7 @@ class _AddNicknameScreenState extends State<AddNicknameScreen> {
                           widget.accountNumber,
                           style: TextStyle(
                             color: Colors.white,
-                            fontSize: 16,
+                            fontSize: 18,
                             fontFamily: 'CustomFont',
                           ),
                         ),
@@ -209,7 +183,7 @@ class _AddNicknameScreenState extends State<AddNicknameScreen> {
                           "Account Title:",
                           style: TextStyle(
                             color: Colors.white,
-                            fontSize: 16,
+                            fontSize: 18,
                             fontFamily: 'CustomFont',
                           ),
                         ),
@@ -218,7 +192,7 @@ class _AddNicknameScreenState extends State<AddNicknameScreen> {
                           "Account Title Here", // Replace with actual account title
                           style: TextStyle(
                             color: Colors.white,
-                            fontSize: 16,
+                            fontSize: 18,
                             fontFamily: 'CustomFont',
                           ),
                         ),
@@ -234,7 +208,7 @@ class _AddNicknameScreenState extends State<AddNicknameScreen> {
                           "Bank Name:",
                           style: TextStyle(
                             color: Colors.white,
-                            fontSize: 16,
+                            fontSize: 18,
                             fontFamily: 'CustomFont',
                           ),
                         ),
@@ -243,7 +217,7 @@ class _AddNicknameScreenState extends State<AddNicknameScreen> {
                           widget.bank.bankName,
                           style: TextStyle(
                             color: Colors.white,
-                            fontSize: 16,
+                            fontSize: 18,
                             fontFamily: 'CustomFont',
                           ),
                         ),
@@ -259,7 +233,7 @@ class _AddNicknameScreenState extends State<AddNicknameScreen> {
                           "Branch:",
                           style: TextStyle(
                             color: Colors.white,
-                            fontSize: 16,
+                            fontSize: 18,
                             fontFamily: 'CustomFont',
                           ),
                         ),
@@ -268,7 +242,7 @@ class _AddNicknameScreenState extends State<AddNicknameScreen> {
                           "Branch Name Here", // Replace with actual branch name
                           style: TextStyle(
                             color: Colors.white,
-                            fontSize: 16,
+                            fontSize: 18,
                             fontFamily: 'CustomFont',
                           ),
                         ),
@@ -282,14 +256,14 @@ class _AddNicknameScreenState extends State<AddNicknameScreen> {
               child: SingleChildScrollView(
                 child: Column(
                   children: [
-                    SizedBox(height: 5),
+                    SizedBox(height: 10),
                     Container(
                       margin: const EdgeInsets.only(left: 20.0),
                       child: TextField(
                         controller: _nicknameController,
                         style: TextStyle(
                           color: Colors.white,
-                          fontSize: 16,
+                          fontSize: 20,
                           fontFamily: 'CustomFont',
                         ),
                         decoration: InputDecoration(
@@ -308,41 +282,60 @@ class _AddNicknameScreenState extends State<AddNicknameScreen> {
                     SizedBox(height: 5),
                     Container(
                       width: double.infinity,
-                      color: AppColors.yellowcolor,
+                     // color: AppColors.yellowcolor,
                       padding: EdgeInsets.symmetric(vertical: 15.0),
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.spaceAround,
                         children: [
-                          InkWell(
-                            onTap: () {
-                              // Navigate back to the previous screen
-                              Navigator.pop(context);
-                            },
-                            child: Text(
-                              "Cancel",
-                              style: TextStyle(
-                                color: Colors.white,
-                                fontSize: 16,
-                                fontFamily: 'CustomFont',
+                          Expanded(
+                            child: ElevatedButton(
+                              onPressed: () {
+                                // Navigate back to the previous screen
+                                Navigator.pop(context);
+                              },
+                              style: ElevatedButton.styleFrom(
+                                backgroundColor: AppColors.yellowcolor, // Match the container color
+                                padding: EdgeInsets.symmetric(vertical: 15), // Adjust padding as needed
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.zero, // Square corners
+                                ),
+                              ),
+                              child: Text(
+                                "Cancel",
+                                style: TextStyle(
+                                  color: Colors.white,
+                                  fontSize: 16,
+                                  fontFamily: 'CustomFont',
+                                ),
                               ),
                             ),
                           ),
-                          SizedBox(width: 20),
-                          InkWell(
-                            onTap:
-                                _saveToFirebase, // Call the method to save details
-                            child: Text(
-                              "Next",
-                              style: TextStyle(
-                                color: Colors.white,
-                                fontSize: 16,
-                                fontFamily: 'CustomFont',
+                          SizedBox(width: 10), // Space between buttons
+                          Expanded(
+                            child: ElevatedButton(
+                              onPressed: _saveToFirebase, // Call the method to save details
+                              style: ElevatedButton.styleFrom(
+                                backgroundColor: AppColors.yellowcolor, // Match the container color
+                                padding: EdgeInsets.symmetric(vertical: 15), // Adjust padding as needed
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.zero, // Square corners
+                                ),
+                              ),
+                              child: Text(
+                                "Next",
+                                style: TextStyle(
+                                  color: Colors.white,
+                                  fontSize: 16,
+                                  fontFamily: 'CustomFont',
+                                ),
                               ),
                             ),
                           ),
                         ],
                       ),
                     ),
+
+
                   ],
                 ),
               ),

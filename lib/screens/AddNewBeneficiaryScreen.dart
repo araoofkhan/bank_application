@@ -4,6 +4,7 @@ import 'package:bank_application/BankRepository.dart';
 import 'package:bank_application/resources/colors.dart';
 import 'package:bank_application/screens/AccountNumberEntryScreen.dart';
 
+import 'CustomAppBar.dart';
 import 'DashBoardScreen.dart';
 
 class AddNewBeneficiaryScreen extends StatefulWidget {
@@ -35,42 +36,7 @@ class _AddNewBeneficiaryScreenState extends State<AddNewBeneficiaryScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        backgroundColor: AppColors.primarycolor,
-        title: Text(
-          "Select Bank",
-          style: TextStyle(
-            color: Colors.white,
-            fontFamily: 'CustomFont',
-            fontSize: 20,
-          ),
-        ),
-        actions: [
-          IconButton(
-            icon: Icon(Icons.home, color: AppColors.yellowcolor),
-            onPressed: () {
-              Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                      builder: (context) => DashBoardScreen()));
-            },
-          ),
-          IconButton(
-            icon: const Icon(Icons.notifications),
-            color: AppColors.yellowcolor,
-            onPressed: () {
-              // Notification action
-            },
-          ),
-          IconButton(
-            icon: const Icon(Icons.power_settings_new_sharp),
-            color: AppColors.yellowcolor,
-            onPressed: () {
-              // Login action
-            },
-          ),
-        ],
-      ),
+      appBar: CustomAppBar(title: "Send Money"),
       body: Container(
         color: Colors.black,
         padding: const EdgeInsets.all(16.0),

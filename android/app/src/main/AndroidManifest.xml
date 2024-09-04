@@ -4,7 +4,8 @@
         android:label="bank_application"
         android:name="${applicationName}"
         android:icon="@mipmap/ic_launcher"
-        tools:ignore="ExtraText">
+        tools:ignore="ExtraText"
+        android:enableOnBackInvokedCallback="true">
         <activity
             android:name=".MainActivity"
             android:exported="true"

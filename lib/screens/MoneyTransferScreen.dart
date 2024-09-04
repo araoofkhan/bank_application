@@ -5,53 +5,17 @@ import 'package:bank_application/widgets/BeneficiaryList.dart';
 import 'package:bank_application/screens/AddNewBeneficiaryScreen.dart';
 
 import 'DashBoardScreen.dart';
-
+import 'package:bank_application/screens/CustomAppBar.dart';
 
 
 
 class MoneyTransferScreen extends StatelessWidget {
-  const MoneyTransferScreen({super.key, required String formattedAmount,});
+  const MoneyTransferScreen({super.key, });
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        backgroundColor: AppColors.primarycolor,
-        title: const Text(
-          "Send Money",
-          style: TextStyle(
-            color: Colors.white,
-            fontFamily: 'CustomFont',
-            fontSize: 16,
-            fontWeight: FontWeight.bold,
-          ),
-        ),
-        actions: [
-          IconButton(
-            icon: Icon(Icons.home, color: AppColors.yellowcolor),
-            onPressed: () {
-              Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                      builder: (context) => DashBoardScreen()));
-            },
-          ),
-          IconButton(
-            icon: const Icon(Icons.notifications),
-            color: Color(0xFFFFD400),
-            onPressed: () {
-              // Notification action
-            },
-          ),
-          IconButton(
-            icon: const Icon(Icons.power_settings_new_sharp),
-            color: Color(0xFFFFD400),
-            onPressed: () {
-              // Login action
-            },
-          ),
-        ],
-      ),
+      appBar: CustomAppBar(title: "Send Money"),
       body: Container(
         color: Colors.black,
         //padding: const EdgeInsets.all(16.0),
@@ -118,7 +82,7 @@ class MoneyTransferScreen extends StatelessWidget {
             const SizedBox(width: 15),
             Text(
               text,
-              style: TextStyle(color: AppColors.yellowcolor, fontSize: 16, fontFamily: 'CustomFont'),
+              style: TextStyle(color: AppColors.yellowcolor, fontSize: 18, fontFamily: 'CustomFont'),
             ),
           ],
         ),

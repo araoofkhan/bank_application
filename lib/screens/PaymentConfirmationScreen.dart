@@ -9,7 +9,7 @@ import 'package:screenshot/screenshot.dart';
 import 'package:share_plus/share_plus.dart';
 import '../resources/colors.dart';
 import 'DashBoardScreen.dart';
-
+import 'package:bank_application/screens/CustomAppBar.dart';
 class PaymentConfirmationScreen extends StatefulWidget {
   final double amount;
   final String nickname;
@@ -44,30 +44,7 @@ class _PaymentConfirmationScreenState extends State<PaymentConfirmationScreen> {
     final String formattedDate = DateFormat('dd-MM-yyyy – HH:mm').format(DateTime.now());
     final String transactionId = _generateTransactionId();
     return Scaffold(
-      appBar: AppBar(
-        title: Text('Send Money', style: TextStyle(color: AppColors.yellowcolor)),
-        backgroundColor: Colors.purple,
-        actions: [
-          IconButton(
-            icon: Icon(Icons.home, color: AppColors.yellowcolor),
-            onPressed: () {
-              Navigator.push(context, MaterialPageRoute(builder: (context) => DashBoardScreen()));
-            },
-          ),
-          IconButton(
-            icon: Icon(Icons.notifications, color: AppColors.yellowcolor),
-            onPressed: () {
-              // Handle notifications button action
-            },
-          ),
-          IconButton(
-            icon: Icon(Icons.power_settings_new, color: AppColors.yellowcolor),
-            onPressed: () {
-              // Handle power off button action
-            },
-          ),
-        ],
-      ),
+      appBar: CustomAppBar(title: "Send Money"),
       body: Screenshot(
         controller: _screenshotController,
         child: Container(

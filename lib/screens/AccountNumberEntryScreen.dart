@@ -4,7 +4,8 @@ import 'package:bank_application/resources/colors.dart';
 import '../models/BankModel.dart';
 import 'AddNickNameScreen.dart';
 import 'DashBoardScreen.dart';
-
+import 'ToastUtil.dart';
+import 'CustomAppBar.dart';
 
 class AccountNumberEntryScreen extends StatefulWidget {
   final BankModel bank;
@@ -20,12 +21,10 @@ class _AccountNumberEntryScreenState extends State<AccountNumberEntryScreen> {
 
   void _onNextTapped() {
     if (_accountNumberController.text.isEmpty) {
-      Fluttertoast.showToast(
-        msg: "Account number cannot be empty",
-        toastLength: Toast.LENGTH_SHORT,
-        gravity: ToastGravity.CENTER,
-        backgroundColor: Colors.white,
-        textColor: Colors.black,
+
+          ToastUtil.showToast(
+          context: context,
+          message: "Account number cannot be empty",
       );
     } else {
       Navigator.push(
@@ -43,42 +42,7 @@ class _AccountNumberEntryScreenState extends State<AccountNumberEntryScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        backgroundColor: AppColors.primarycolor,
-        title: const Text(
-          "Send Money",
-          style: TextStyle(
-            color: Colors.white,
-            fontFamily: 'CustomFont',
-            fontSize: 20,
-          ),
-        ),
-        actions: [
-          IconButton(
-            icon: Icon(Icons.home, color: AppColors.yellowcolor),
-            onPressed: () {
-              Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                      builder: (context) => DashBoardScreen()));
-            },
-          ),
-          IconButton(
-            icon: const Icon(Icons.notifications),
-            color: AppColors.yellowcolor,
-            onPressed: () {
-              // Notification action
-            },
-          ),
-          IconButton(
-            icon: const Icon(Icons.power_settings_new_sharp),
-            color: AppColors.yellowcolor,
-            onPressed: () {
-              // Power off action
-            },
-          ),
-        ],
-      ),
+      appBar: CustomAppBar(title: "Send Money"),
       body: Container(
         color: Colors.black,
         padding: const EdgeInsets.all(16.0),
@@ -121,7 +85,7 @@ class _AccountNumberEntryScreenState extends State<AccountNumberEntryScreen> {
 
                 ),
                 style: TextStyle(color: Colors.white,fontSize:20,fontFamily: 'CustomFont'),
-                keyboardType: TextInputType.number,
+               // keyboardType: TextInputType.number,
               ),
             ),
             const Divider(color: Colors.grey),

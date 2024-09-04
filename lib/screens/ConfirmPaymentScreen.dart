@@ -5,7 +5,7 @@ import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
 import 'DashBoardScreen.dart';
 import 'PaymentConfirmationScreen.dart';
-
+import 'package:bank_application/screens/CustomAppBar.dart';
 final DatabaseReference _balanceRef = FirebaseDatabase.instance
     .ref()
     .child('accountHolder')
@@ -109,33 +109,7 @@ class _ConfirmPaymentScreenState extends State<ConfirmPaymentScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text('Send Money', style: TextStyle(color: AppColors.yellowcolor)),
-        backgroundColor: Colors.purple,
-        actions: [
-          IconButton(
-            icon: Icon(Icons.home, color: AppColors.yellowcolor),
-            onPressed: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(builder: (context) => DashBoardScreen()),
-              );
-            },
-          ),
-          IconButton(
-            icon: Icon(Icons.notifications, color: AppColors.yellowcolor),
-            onPressed: () {
-              // Handle notifications button action
-            },
-          ),
-          IconButton(
-            icon: Icon(Icons.power_settings_new, color: AppColors.yellowcolor),
-            onPressed: () {
-              // Handle power off button action
-            },
-          ),
-        ],
-      ),
+      appBar: CustomAppBar(title: "Send Money"),
       body: Container(
         color: Colors.black,
         padding: EdgeInsets.all(16.0),
