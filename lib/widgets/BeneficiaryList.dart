@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:bank_application/models/Beneficiary.dart';
 import 'package:connectivity_plus/connectivity_plus.dart';
-import 'package:bank_application/screens/CustomAppBar.dart';
+
 import '../resources/colors.dart';
 import '../screens/sendmoneyscreen.dart';
 

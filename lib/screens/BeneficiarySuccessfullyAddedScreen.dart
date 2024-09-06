@@ -1,20 +1,17 @@
-import 'package:bank_application/screens/sendmoneyscreen.dart';
 import 'package:flutter/material.dart';
 
-import '../screens/MoneyTransferScreen.dart';
 import '../models/BankModel.dart';
 import '../resources/colors.dart';
 import 'DashBoardScreen.dart'; // Adjust the import path
-import 'package:bank_application/screens/CustomAppBar.dart';
+
 
 
 class BeneficiarySuccessfullyAddedScreen extends StatelessWidget {
   final BankModel bankModel;
   final String nickname;
-  final String account_number;
   const BeneficiarySuccessfullyAddedScreen({
     Key? key,
-    required this.bankModel, required  this.nickname, required this.account_number,
+    required this.bankModel, required  this.nickname,
   }) : super(key: key);
 
   @override
@@ -24,7 +21,45 @@ class BeneficiarySuccessfullyAddedScreen extends StatelessWidget {
     final screenHeight = MediaQuery.of(context).size.height;
 
     return Scaffold(
-      appBar: CustomAppBar(title: "Send Money"),
+      appBar: AppBar(
+        backgroundColor: AppColors.primarycolor,
+        title: const Text(
+          "Send Money",
+          style: TextStyle(
+            color: Colors.white,
+            fontFamily: 'CustomFont',
+            fontSize: 20,
+          ),
+        ),
+        actions: [
+          IconButton(
+            icon: const Icon(Icons.home),
+            color: AppColors.yellowcolor,
+            onPressed: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => DashBoardScreen(),
+                ),
+              );
+            },
+          ),
+          IconButton(
+            icon: const Icon(Icons.notifications),
+            color: AppColors.yellowcolor,
+            onPressed: () {
+              // Handle notifications
+            },
+          ),
+          IconButton(
+            icon: const Icon(Icons.power_settings_new_sharp),
+            color: AppColors.yellowcolor,
+            onPressed: () {
+              // Handle logout
+            },
+          ),
+        ],
+      ),
       body: Container(
         color: Colors.black, // Set the background color to black
         child: Column(
@@ -99,15 +134,6 @@ class BeneficiarySuccessfullyAddedScreen extends StatelessWidget {
                   Expanded(
                     child: ElevatedButton(
                       onPressed: () {
-                        Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                            builder: (context) => SendMoneyScreen(
-                          beneficiaryName: nickname, // Assuming nickname is passed
-                          accountNumber: account_number, // Ensure these values are available
-                          bankLogo: bankModel.bankLogo, // Ensure these values are available
-                          bankName:bankModel.bankName, // Ensure these values are available
-                        ),));
                         // Handle Pay Now button press
                       },
                       style: ElevatedButton.styleFrom(
@@ -129,10 +155,6 @@ class BeneficiarySuccessfullyAddedScreen extends StatelessWidget {
                   Expanded(
                     child: ElevatedButton(
                       onPressed: () {
-                        Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                            builder: (context) => const MoneyTransferScreen()));
                         // Handle OK button press
                       },
                       style: ElevatedButton.styleFrom(

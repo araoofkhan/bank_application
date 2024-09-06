@@ -4,7 +4,7 @@ import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import '../resources/colors.dart';
-import 'package:bank_application/screens/CustomAppBar.dart';
+
 
 class SendMoneyScreen extends StatefulWidget {
   final String beneficiaryName;
@@ -104,10 +104,14 @@ class _SendMoneyScreenState extends State<SendMoneyScreen> {
   String formatInputAmount(String amount) {
     final sanitizedInput = amount.replaceAll(RegExp('[^0-9.]'), '');
     final enteredNumber = double.tryParse(sanitizedInput) ?? 0.0;
-    final formatter = formatAmount(enteredNumber);
-    return formatter;
+    final formatter = NumberFormat('#,###.##', 'en_US');
+    return formatter.format(enteredNumber);
   }
 
+  String formatAmount(double amount) {
+    final formatter = NumberFormat('#,###.##', 'en_US');
+    return formatter.format(amount);
+  }
 
   void _updateBalance() {
     final enteredAmountString = _amountController.text;
@@ -201,7 +205,32 @@ class _SendMoneyScreenState extends State<SendMoneyScreen> {
         }
       },
       child: Scaffold(
-        appBar: CustomAppBar(title: "Send Money"),
+        appBar: AppBar(
+          backgroundColor: AppColors.primarycolor,
+          title: const Text(
+            'Send Money',
+            style: TextStyle(color: AppColors.yellowcolor, fontSize: 20),
+          ),
+          actions: [
+            IconButton(
+              icon: Icon(Icons.home, color: AppColors.yellowcolor),
+              onPressed: () {
+                Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) => DashBoardScreen()));
+              },
+            ),
+            IconButton(
+              icon: const Icon(Icons.notifications, color: AppColors.yellowcolor),
+              onPressed: () {},
+            ),
+            IconButton(
+              icon: const Icon(Icons.power_settings_new, color: AppColors.yellowcolor),
+              onPressed: () {},
+            ),
+          ],
+        ),
         body: GestureDetector(
           onTap: _dismissKeyboard,
           child: LayoutBuilder(
@@ -316,11 +345,8 @@ class _SendMoneyScreenState extends State<SendMoneyScreen> {
                             width: double.infinity,
                             child: ElevatedButton(
                               style: ElevatedButton.styleFrom(
-                                backgroundColor: AppColors.primarycolor, // Background color of the button
-                                padding: EdgeInsets.symmetric(vertical: 16.0), // Adjust vertical padding for height
-                                shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.zero, // No rounded corners
-                                ),
+                                backgroundColor: AppColors.primarycolor,
+                                padding: EdgeInsets.symmetric(vertical: 1.0),
                               ),
                               onPressed: () {
                                 FocusScope.of(context).unfocus();
@@ -332,7 +358,6 @@ class _SendMoneyScreenState extends State<SendMoneyScreen> {
                               ),
                             ),
                           ),
-
                         ],
                       ),
                     ),

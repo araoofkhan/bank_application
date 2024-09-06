@@ -3,14 +3,13 @@ import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
  import 'package:bank_application/resources/colors.dart';
-// Example usage in your screen
-import 'package:flutter/material.dart';
-import 'package:bank_application/screens/CustomAppBar.dart';
 
 import 'package:bank_application/screens/DashBoardScreen.dart';
 
-import 'BeneficiarySuccessfullyAddedScreen.dart';
-import 'ToastUtil.dart'; // For AddNewBeneficiaryScreen
+
+
+import '../models/Beneficiary.dart';
+import 'BeneficiarySuccessfullyAddedScreen.dart'; // For AddNewBeneficiaryScreen
 
 
 class AddNicknameScreen extends StatefulWidget {
@@ -29,67 +28,106 @@ class _AddNicknameScreenState extends State<AddNicknameScreen> {
       FirebaseDatabase.instance.ref().child('Bank_Accounts');
 
 
-  void _saveToFirebase() async {
-    // Check if nickname is empty
+  void _saveToFirebase() {
+
     if (_nicknameController.text.isEmpty) {
-      ToastUtil.showToast(
-        context: context,
-        message: "Nickname cannot be empty",
+      Fluttertoast.showToast(
+        msg: "Nickname cannot be empty",
+        toastLength: Toast.LENGTH_SHORT,
+        gravity: ToastGravity.CENTER,
+        backgroundColor: Colors.white,
+        textColor: Colors.black,
       );
       return;
     }
 
-    try {
-      // Query Firebase to check if account number already exists
-      final querySnapshot = await _dbRef.orderByChild('account_number').equalTo(widget.accountNumber).get();
+    _dbRef.push().set({
+      'bank_name': widget.bank.bankName,
+      'bank_logo': widget.bank.bankLogo,
+      'account_number': widget.accountNumber,
+      'nickname': _nicknameController.text,
+      //'account_title':
+        //  "Account Title Here", // Replace with actual account title
+      //'branch_name': "Branch Name Here", // Replace with actual branch name
 
-      if (querySnapshot.exists) {
-        // Account number already exists
-        ToastUtil.showToast(
-          context: context,
-          message: "Account number already exists",
-        );
-        return;;
-      }
-
-      // Proceed to save new account details
-      await _dbRef.push().set({
-        'bank_name': widget.bank.bankName,
-        'bank_logo': widget.bank.bankLogo,
-        'account_number': widget.accountNumber,
-        'nickname': _nicknameController.text,
-        // Add any other fields as needed
-      });
-
+    }).then((_) {
       print('Beneficiary added successfully');
-      ToastUtil.showToast(
-        context: context,
-        message: "Beneficiary added successfully",
-      );
+      Fluttertoast.showToast(
+        msg: "Account details saved",
+        toastLength: Toast.LENGTH_SHORT,
+        gravity: ToastGravity.CENTER,
+        backgroundColor: Colors.white,
+        textColor: Colors.black,);
       Navigator.push(
         context,
         MaterialPageRoute(
           builder: (context) => BeneficiarySuccessfullyAddedScreen(
             bankModel: widget.bank,
-            nickname: _nicknameController.text,
-            account_number: widget.accountNumber,
+            nickname: _nicknameController.text, // Pass the nickname here
           ),
         ),
       );
-    } catch (error) {
-      print('Failed to add beneficiary: $error');
-      ToastUtil.showToast(
-        context: context,
-        message: "Failed to save Beneficiary",
-      );
-    }
-  }
 
+    }
+
+      ).catchError((error) {
+      print('Failed to add beneficiary: $error');
+      Fluttertoast.showToast(
+        msg: "Error saving details",
+        toastLength: Toast.LENGTH_SHORT,
+        gravity: ToastGravity.CENTER,
+        backgroundColor: Colors.white,
+        textColor: Colors.black,
+      );
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: CustomAppBar(title: "Send Money"),
+      appBar: AppBar(
+        backgroundColor: AppColors.primarycolor,
+        title: Text(
+          "Send Money",
+          style: TextStyle(
+            color: Colors.white,
+            fontFamily: 'CustomFont',
+            fontSize: 20,
+          ),
+        ),
+        actions: [
+          IconButton(
+            icon: Icon(Icons.home),
+            color: AppColors.yellowcolor,
+            onPressed: () {
+              onTap:
+              () {
+                print('Home icon pressed');
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => DashBoardScreen(),
+                  ),
+                );
+              };
+            },
+          ),
+          IconButton(
+            icon: Icon(Icons.notifications),
+            color: AppColors.yellowcolor,
+            onPressed: () {
+              // Handle notifications
+            },
+          ),
+          IconButton(
+            icon: Icon(Icons.power_settings_new_sharp),
+            color: AppColors.yellowcolor,
+            onPressed: () {
+              // Handle logout
+            },
+          ),
+        ],
+      ),
       body: Container(
         color: Colors.black,
         child: Column(
