@@ -5,6 +5,8 @@ import 'package:intl/intl.dart';
 import 'package:bank_application/screens/MoneyTransferScreen.dart';
 import 'package:bank_application/widgets/CustomBottomAppBar.dart';
 
+import 'SoundTestScreen.dart';
+
 
 // Global function to format currency
 
@@ -62,8 +64,12 @@ class _DashBoardScreenState extends State<DashBoardScreen> {
 
   @override
   Widget build(BuildContext context) {
-
-    return Scaffold(
+    return PopScope(
+        onPopInvoked: (popInvokedCallback) {
+          // This callback is triggered when the back button is pressed
+          popInvokedCallback; // Return false to prevent back navigation
+        },
+   child: Scaffold(
       appBar: AppBar(
         backgroundColor: AppColors.primarycolor,
         title: const Text(
@@ -397,6 +403,6 @@ class _DashBoardScreenState extends State<DashBoardScreen> {
         child: const Icon(Icons.qr_code_scanner, color: Colors.white, size: 45), // Background color for the scanner icon
       ),
       floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
-    );
+    ));
   }
 }

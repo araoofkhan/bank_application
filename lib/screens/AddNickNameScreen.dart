@@ -63,7 +63,9 @@ class _AddNicknameScreenState extends State<AddNicknameScreen> {
         MaterialPageRoute(
           builder: (context) => BeneficiarySuccessfullyAddedScreen(
             bankModel: widget.bank,
-            nickname: _nicknameController.text, // Pass the nickname here
+            nickname: _nicknameController.text,
+            beneficiaryaccountnumber:widget.accountNumber,
+            // Pass the nickname here
           ),
         ),
       );

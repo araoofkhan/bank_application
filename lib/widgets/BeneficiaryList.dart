@@ -6,11 +6,13 @@ import 'package:connectivity_plus/connectivity_plus.dart';
 
 import '../resources/colors.dart';
 import '../screens/sendmoneyscreen.dart';
-
 class BeneficiaryList extends StatefulWidget {
+  final String searchQuery;
+
+  BeneficiaryList({required this.searchQuery});
+
   @override
   _BeneficiaryListState createState() => _BeneficiaryListState();
-
 }
 
 class _BeneficiaryListState extends State<BeneficiaryList> {
@@ -19,6 +21,7 @@ class _BeneficiaryListState extends State<BeneficiaryList> {
   bool _isConnected = true;
 
   List<Map<String, dynamic>> _beneficiaries = [];
+  List<Map<String, dynamic>> _filteredBeneficiaries = [];
   late StreamSubscription<ConnectivityResult> _connectivitySubscription;
 
   @override
@@ -33,8 +36,7 @@ class _BeneficiaryListState extends State<BeneficiaryList> {
   @override
   void dispose() {
     _connectivitySubscription.cancel();
-    super
-        .dispose();
+    super.dispose();
   }
 
   Future<void> _checkInternetConnectivity() async {
@@ -66,6 +68,7 @@ class _BeneficiaryListState extends State<BeneficiaryList> {
 
         setState(() {
           _beneficiaries = beneficiariesList;
+          _filterBeneficiaries();
           _isLoading = false;
         });
       } else {
@@ -79,18 +82,23 @@ class _BeneficiaryListState extends State<BeneficiaryList> {
       });
     });
   }
-/*
-  void _deleteBeneficiary(String key) {
-    _dbRef.child(key).remove().then((_) {
-      setState(() {
-        _beneficiaries.removeWhere((element) => element['key'] == key);
-      });
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Beneficiary deleted')),
-      );
-    });
-  }*/
 
+  void _filterBeneficiaries() {
+    _filteredBeneficiaries = _beneficiaries
+        .where((beneficiary) => beneficiary['beneficiary']
+        .nickname
+        .toLowerCase()
+        .contains(widget.searchQuery.toLowerCase()))
+        .toList();
+  }
+
+  @override
+  void didUpdateWidget(covariant BeneficiaryList oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (oldWidget.searchQuery != widget.searchQuery) {
+      _filterBeneficiaries();
+    }
+  }
 
   void _deleteBeneficiary(String beneficiaryKey) async {
     await _dbRef.child(beneficiaryKey).remove();
@@ -126,113 +134,102 @@ class _BeneficiaryListState extends State<BeneficiaryList> {
     );
   }
 
+
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: Container(
-        color: Colors.black,
-        child: _isLoading
-            ? Center(child: CircularProgressIndicator())
-            : _isConnected
-            ? _buildBeneficiaryList()
-            : Center(child: Text('No internet connection', style: TextStyle(color: Colors.white))),
-      ),
-    );
+    return _isLoading
+        ? Center(child: CircularProgressIndicator())
+        : _isConnected
+        ? _buildBeneficiaryList()
+        : Center(child: Text('No internet connection', style: TextStyle(color: Colors.white)));
   }
 
   Widget _buildBeneficiaryList() {
     return ListView.builder(
-      itemCount: _beneficiaries.length,
+      itemCount: _filteredBeneficiaries.length,
       itemBuilder: (context, index) {
-        final beneficiaryData = _beneficiaries[index];
+        final beneficiaryData = _filteredBeneficiaries[index];
         final beneficiaryKey = beneficiaryData['key'] as String;
         final beneficiary = beneficiaryData['beneficiary'] as Beneficiary;
 
-        return GestureDetector(
-          onTap: () {
-          /*  ScaffoldMessenger.of(context).showSnackBar(
-              SnackBar(
-                content: Text('Tapped on ${beneficiary.nickname.isEmpty ? beneficiary.bankName : beneficiary.nickname}'),
-              ),
-            );*/
+        return _buildBeneficiaryTile(beneficiary, beneficiaryKey);
+      },
+    );
+  }
 
-            Navigator.push(
-                context,
-                MaterialPageRoute(
-                builder: (context) => SendMoneyScreen(
+  Widget _buildBeneficiaryTile(Beneficiary beneficiary, String beneficiaryKey) {
+    return GestureDetector(
+      onTap: () {
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (context) => SendMoneyScreen(
               beneficiaryName: beneficiary.nickname,
               accountNumber: beneficiary.accountNumber,
               bankLogo: beneficiary.bankLogo,
-           bankName:beneficiary.bankName,
-           // Pass the balance (example value)
-            ),
-            ),
-            );
-          },
-          child: Container(
-            color: Colors.black,
-            margin: const EdgeInsets.symmetric(vertical: 0.0),
-            child: Stack(
-              children: [
-                ListTile(
-                  leading: Image.asset(
-                    beneficiary.bankLogo,
-                    width: 50,
-                    height: 50,
-                  ),
-                  title: Text(
-                    beneficiary.nickname.isEmpty ? beneficiary.bankName : beneficiary.nickname,
-                    style: TextStyle(color: AppColors.yellowcolor,fontSize:18,fontWeight:FontWeight.bold),
-                  ),
-                  subtitle: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      if (beneficiary.accountNumber.isNotEmpty)
-                        Text('Account Number: ${beneficiary.accountNumber}', style: TextStyle(color: Colors.white,fontSize:16)),
-                      if (beneficiary.bankName.isNotEmpty)
-                        Text('Bank Name: ${beneficiary.bankName}', style: TextStyle(color: Colors.white,fontSize: 16)),
-                      if (beneficiary.nickname.isNotEmpty)
-                        Text('Nickname: ${beneficiary.nickname}', style: TextStyle(color: Colors.white,fontSize: 16)),
-                      Divider(color: Colors.white),
-                    ],
-                  ),
-                ),
-                Positioned(
-                  right: 0,
-                  top: 0,
-                  child: Row(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      IconButton(
-                        icon: Icon(Icons.star, color: Colors.white),
-                        onPressed: () {
-                          // Implement favorite action
-                        },
-                      ),
-                      IconButton(
-                        icon: Icon(Icons.edit, color: Colors.white),
-                        onPressed: () {
-                          // Implement edit action
-                        },
-                      ),
-                      IconButton(
-                        icon: Icon(Icons.delete, color: Colors.white),
-                        onPressed: () {
-                          _showDeleteConfirmationDialog(beneficiaryKey);
-                        },
-                      ),
-                    ],
-                  ),
-                ),
-              ],
+              bankName: beneficiary.bankName,
             ),
           ),
         );
-
-
-
-
       },
+      child: Container(
+        color: Colors.black,
+        margin: const EdgeInsets.symmetric(vertical: 0.0),
+        child: Stack(
+          children: [
+            ListTile(
+              leading: Image.asset(
+                beneficiary.bankLogo,
+                width: 50,
+                height: 50,
+              ),
+              title: Text(
+                beneficiary.nickname.isEmpty ? beneficiary.bankName : beneficiary.nickname,
+                style: TextStyle(color: AppColors.yellowcolor, fontSize: 18, fontWeight: FontWeight.bold),
+              ),
+              subtitle: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  if (beneficiary.accountNumber.isNotEmpty)
+                    Text('Account Number: ${beneficiary.accountNumber}', style: TextStyle(color: Colors.white, fontSize: 16)),
+                  if (beneficiary.bankName.isNotEmpty)
+                    Text('Bank Name: ${beneficiary.bankName}', style: TextStyle(color: Colors.white, fontSize: 16)),
+                  if (beneficiary.nickname.isNotEmpty)
+                    Text('Nickname: ${beneficiary.nickname}', style: TextStyle(color: Colors.white, fontSize: 16)),
+                  Divider(color: Colors.white),
+                ],
+              ),
+            ),
+            Positioned(
+              right: 0,
+              top: 0,
+              child: Row(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  IconButton(
+                    icon: Icon(Icons.star, color: Colors.white),
+                    onPressed: () {
+                      // Implement favorite action
+                    },
+                  ),
+                  IconButton(
+                    icon: Icon(Icons.edit, color: Colors.white),
+                    onPressed: () {
+                      // Implement edit action
+                    },
+                  ),
+                  IconButton(
+                    icon: Icon(Icons.delete, color: Colors.white),
+                    onPressed: () {
+                      _showDeleteConfirmationDialog(beneficiaryKey);
+                    },
+                  ),
+                ],
+              ),
+            ),
+          ],
+        ),
+      ),
     );
   }
 }

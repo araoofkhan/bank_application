@@ -1,6 +1,9 @@
 import 'dart:io';
 import 'dart:math';
+import 'dart:typed_data'; // Correct import for ByteData
+import 'package:audioplayers/audioplayers.dart'; // For playing sounds
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart'; // Correct import for ByteData
 import 'package:image_gallery_saver/image_gallery_saver.dart';
 import 'package:intl/intl.dart';
 import 'package:path_provider/path_provider.dart';
@@ -8,8 +11,9 @@ import 'package:permission_handler/permission_handler.dart';
 import 'package:screenshot/screenshot.dart';
 import 'package:share_plus/share_plus.dart';
 import '../resources/colors.dart';
+import '../widgets/CustomAppBar.dart';
 import 'DashBoardScreen.dart';
-import 'package:bank_application/screens/CustomAppBar.dart';
+
 class PaymentConfirmationScreen extends StatefulWidget {
   final double amount;
   final String nickname;
@@ -27,16 +31,39 @@ class PaymentConfirmationScreen extends StatefulWidget {
 
   @override
   _PaymentConfirmationScreenState createState() => _PaymentConfirmationScreenState();
-
 }
+
 class _PaymentConfirmationScreenState extends State<PaymentConfirmationScreen> {
   final ScreenshotController _screenshotController = ScreenshotController();
+  final AudioPlayer _audioPlayer = AudioPlayer();
 
   @override
   void initState() {
     super.initState();
+    _playSuccessSound(context); // Pass context to _playSuccessSound
   }
 
+  // Play sound function
+  Future<void> _playSuccessSound(BuildContext context) async {
+    try {
+      final ByteData data = await rootBundle.load('lib/resources/sounds/confirmationsound.mp3');
+      await _audioPlayer.play(BytesSource(data.buffer.asUint8List()));
+    } catch (e) {
+      print("Error playing sound: $e");
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text('Error playing sound: $e'),
+          backgroundColor: Colors.red,
+        ),
+      );
+    }
+  }
+
+  @override
+  void dispose() {
+    _audioPlayer.dispose(); // Dispose of the audio player to free up resources
+    super.dispose();
+  }
   @override
   Widget build(BuildContext context) {
     // Access amount via widget.amount

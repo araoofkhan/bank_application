@@ -4,7 +4,8 @@ import 'package:bank_application/BankRepository.dart';
 import 'package:bank_application/resources/colors.dart';
 import 'package:bank_application/screens/AccountNumberEntryScreen.dart';
 
-import 'CustomAppBar.dart';
+
+import '../widgets/CustomAppBar.dart';
 import 'DashBoardScreen.dart';
 
 class AddNewBeneficiaryScreen extends StatefulWidget {

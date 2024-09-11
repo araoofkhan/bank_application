@@ -2,17 +2,23 @@ import 'package:flutter/material.dart';
 
 import '../models/BankModel.dart';
 import '../resources/colors.dart';
-import 'DashBoardScreen.dart'; // Adjust the import path
+import 'DashBoardScreen.dart';
+import 'MoneyTransferScreen.dart';
+import 'SendMoneyScreen.dart'; // Adjust the import path
 
 
 
 class BeneficiarySuccessfullyAddedScreen extends StatelessWidget {
   final BankModel bankModel;
   final String nickname;
+  final String beneficiaryaccountnumber;
+
+
   const BeneficiarySuccessfullyAddedScreen({
     Key? key,
-    required this.bankModel, required  this.nickname,
+    required this.bankModel, required  this.nickname, required this.beneficiaryaccountnumber,
   }) : super(key: key);
+
 
   @override
   Widget build(BuildContext context) {
@@ -134,6 +140,15 @@ class BeneficiarySuccessfullyAddedScreen extends StatelessWidget {
                   Expanded(
                     child: ElevatedButton(
                       onPressed: () {
+                        Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => SendMoneyScreen(
+                                beneficiaryName: nickname, // Assuming nickname is passed
+                                accountNumber:beneficiaryaccountnumber, // Ensure these values are available
+                                bankLogo: bankModel.bankLogo, // Ensure these values are available
+                                bankName:bankModel.bankName, // Ensure these values are available
+                              ),));
                         // Handle Pay Now button press
                       },
                       style: ElevatedButton.styleFrom(
@@ -155,6 +170,10 @@ class BeneficiarySuccessfullyAddedScreen extends StatelessWidget {
                   Expanded(
                     child: ElevatedButton(
                       onPressed: () {
+                        Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => const MoneyTransferScreen()));
                         // Handle OK button press
                       },
                       style: ElevatedButton.styleFrom(

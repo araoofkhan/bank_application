@@ -2,10 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:bank_application/resources/colors.dart';
 import '../models/BankModel.dart';
+import '../widgets/CustomAppBar.dart';
 import 'AddNickNameScreen.dart';
 import 'DashBoardScreen.dart';
 import 'ToastUtil.dart';
-import 'CustomAppBar.dart';
+
 
 class AccountNumberEntryScreen extends StatefulWidget {
   final BankModel bank;

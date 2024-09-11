@@ -4,13 +4,20 @@ import 'package:flutter/material.dart';
 import 'package:bank_application/widgets/BeneficiaryList.dart';
 import 'package:bank_application/screens/AddNewBeneficiaryScreen.dart';
 
+import '../widgets/CustomAppBar.dart';
 import 'DashBoardScreen.dart';
-import 'package:bank_application/screens/CustomAppBar.dart';
 
 
 
-class MoneyTransferScreen extends StatelessWidget {
-  const MoneyTransferScreen({super.key, });
+class MoneyTransferScreen extends StatefulWidget {
+  const MoneyTransferScreen({super.key});
+
+  @override
+  _MoneyTransferScreenState createState() => _MoneyTransferScreenState();
+}
+
+class _MoneyTransferScreenState extends State<MoneyTransferScreen> {
+  String _searchQuery = '';
 
   @override
   Widget build(BuildContext context) {
@@ -22,6 +29,11 @@ class MoneyTransferScreen extends StatelessWidget {
         child: Column(
           children: [
             TextField(
+    onChanged: (query) {
+    setState(() {
+    _searchQuery = query;
+    });
+    },
               decoration: InputDecoration(
                 filled: true,
                 fillColor: Colors.white,
@@ -64,7 +76,7 @@ class MoneyTransferScreen extends StatelessWidget {
             const SizedBox(height: 10.0),
            Divider(color: Colors.grey, indent: 50.0),
             // Beneficiary List
-            Expanded(child: BeneficiaryList()),
+            Expanded(child: BeneficiaryList(searchQuery: _searchQuery)),
           ],
         ),
       ),

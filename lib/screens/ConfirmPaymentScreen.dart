@@ -3,9 +3,10 @@ import 'dart:ui';
 import 'package:bank_application/resources/colors.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
+import '../widgets/CustomAppBar.dart';
 import 'DashBoardScreen.dart';
 import 'PaymentConfirmationScreen.dart';
-import 'package:bank_application/screens/CustomAppBar.dart';
+import 'SendMoneyScreen.dart';
 final DatabaseReference _balanceRef = FirebaseDatabase.instance
     .ref()
     .child('accountHolder')
@@ -134,16 +135,17 @@ class _ConfirmPaymentScreenState extends State<ConfirmPaymentScreen> {
               child: Row(
                 children: [
                   Image.asset(
-                    widget.bankLogo,
-                    width: 40.0,
-                    height: 40.0,
+                    'lib/resources/banklogo/meezan.png', // Path to the image asset in the project
+                    width: 40.0,                       // Width of the image
+                    height: 40.0,                      // Height of the image
                   ),
+
                   SizedBox(width: 16.0),
                   Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
-                        'Account Holder Name', // Replace with actual account holder name
+                        accountHolderName, // Replace with actual account holder name
                         style: TextStyle(
                           fontSize: 18,
                           fontWeight: FontWeight.bold,
@@ -151,7 +153,7 @@ class _ConfirmPaymentScreenState extends State<ConfirmPaymentScreen> {
                         ),
                       ),
                       Text(
-                        'Account Number', // Replace with actual account holder account number
+                        accountHolderAccountNumber, // Replace with actual account holder account number
                         style: TextStyle(
                           fontSize: 18,
                           fontFamily: 'CustomFont',
@@ -205,7 +207,7 @@ class _ConfirmPaymentScreenState extends State<ConfirmPaymentScreen> {
                 borderRadius: BorderRadius.circular(8.0),
               ),
               child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
+            crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   _buildRow('Amount', widget.amount.toStringAsFixed(2), Colors.white),
                   _buildRow('Bank Charges', _calculateBankCharges().toStringAsFixed(2), AppColors.yellowcolor),
@@ -219,16 +221,31 @@ class _ConfirmPaymentScreenState extends State<ConfirmPaymentScreen> {
                 Expanded(
                   child: ElevatedButton(
                     onPressed: () {
-                      // Handle cancel action
-
-                    },
+        // Handle cancel action
+        Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (context) =>
+                SendMoneyScreen(
+                  beneficiaryName: widget.beneficiaryName,
+                  accountNumber: widget.accountNumber,
+                  bankLogo: widget.bankLogo,
+                  bankName: widget.bankName,
+                ),
+        ),
+      );
+        },
                     style: ElevatedButton.styleFrom(
+                        padding: EdgeInsets.symmetric(vertical:10),
                       backgroundColor: Colors.white,
+                        shape: const RoundedRectangleBorder(
+                          borderRadius: BorderRadius.zero, // Set border radius to zero for no rounded edges
+                        )
                     ),
-                    child: Text('Cancel', style: TextStyle(color: Colors.black)),
+                    child: Text('Cancel', style: TextStyle(color: Colors.black,fontSize: 20)),
                   ),
                 ),
-                SizedBox(width: 8.0),
+                //SizedBox(width: 8.0),
                 Expanded(
                   child: ElevatedButton(
                     onPressed: () {
@@ -236,9 +253,15 @@ class _ConfirmPaymentScreenState extends State<ConfirmPaymentScreen> {
 
                     },
                     style: ElevatedButton.styleFrom(
+                      padding: EdgeInsets.symmetric(vertical:10),
                       backgroundColor: Colors.amber,
+                        shape: const RoundedRectangleBorder(
+                      borderRadius: BorderRadius.zero, // Set border radius to zero for no rounded edges
+                    )
                     ),
-                    child: Text('Pay Now'),
+                    child: Text('Pay Now',
+                    style: TextStyle(color: Colors.black,fontSize:20),
+                  ),
                   ),
                 ),
               ],

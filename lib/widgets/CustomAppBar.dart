@@ -25,12 +25,12 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
           icon: const Icon(Icons.home),
           color: AppColors.yellowcolor,
           onPressed: () {
-            Navigator.push(
+            Navigator.pushAndRemoveUntil(
               context,
-              MaterialPageRoute(
-                builder: (context) => DashBoardScreen(),
-              ),
+              MaterialPageRoute(builder: (context) => DashBoardScreen()),
+                  (route) => false, // This will remove all the previous routes
             );
+
           },
         ),
         IconButton(

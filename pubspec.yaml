@@ -44,8 +44,9 @@ dependencies:
   screenshot: ^3.0.0
   path_provider: ^2.0.11
   share_plus: 10.0.0
-
-
+  audioplayers: ^6.1.0
+  assets_audio_player: ^3.1.1
+  soundpool: ^2.4.1
 
 dev_dependencies:
   flutter_test:
@@ -86,6 +87,8 @@ flutter:
             - lib/resources/banklogo/bop.png
             - lib/resources/banklogo/bok.png
             - lib/resources/banklogo/bankislami.png
+            - lib/resources/sounds/confirmationsound.mp3
+
 
 
   #       - asset: fonts/Schyler-Italic.ttf

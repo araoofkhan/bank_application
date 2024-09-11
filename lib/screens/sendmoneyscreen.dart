@@ -2,6 +2,7 @@ import 'package:bank_application/screens/ConfirmPaymentScreen.dart';
 import 'package:bank_application/screens/DashBoardScreen.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:intl/intl.dart';
 import '../resources/colors.dart';
 
@@ -67,12 +68,12 @@ class _SendMoneyScreenState extends State<SendMoneyScreen> {
         });
 
         // Display success message
-        ScaffoldMessenger.of(context).showSnackBar(
+  /*      ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
             content: Text('Balance fetched successfully: $formattedInitialBalance'),
             backgroundColor: Colors.green,
           ),
-        );
+        );*/
       } else {
         // Display message if no data found
         ScaffoldMessenger.of(context).showSnackBar(
@@ -295,7 +296,8 @@ class _SendMoneyScreenState extends State<SendMoneyScreen> {
                           TextField(
                             focusNode: _focusNode,
                             controller: _amountController,
-                            keyboardType: TextInputType.number,
+                            keyboardType: const TextInputType.numberWithOptions(decimal: true),
+
                             style: TextStyle(color: Colors.white, fontSize: 19),
                             decoration: InputDecoration(
                               filled: true,
@@ -339,14 +341,17 @@ class _SendMoneyScreenState extends State<SendMoneyScreen> {
                               ],
                             ),
                           ),
-                          SizedBox(height: 20.0),
+                         // SizedBox(height: 20.0),
                           Spacer(),
                           SizedBox(
                             width: double.infinity,
                             child: ElevatedButton(
                               style: ElevatedButton.styleFrom(
                                 backgroundColor: AppColors.primarycolor,
-                                padding: EdgeInsets.symmetric(vertical: 1.0),
+                                padding: EdgeInsets.symmetric(vertical:15.0),
+                                shape: const RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.zero, // Set border radius to zero for no rounded edges
+                                ),
                               ),
                               onPressed: () {
                                 FocusScope.of(context).unfocus();
@@ -354,10 +359,11 @@ class _SendMoneyScreenState extends State<SendMoneyScreen> {
                               },
                               child: Text(
                                 'Next',
-                                style: TextStyle(color: AppColors.yellowcolor, fontSize: 18),
+                                style: TextStyle(color: AppColors.yellowcolor, fontSize: 22),
                               ),
                             ),
                           ),
+
                         ],
                       ),
                     ),
