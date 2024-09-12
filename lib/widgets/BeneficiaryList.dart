@@ -6,6 +6,9 @@ import 'package:connectivity_plus/connectivity_plus.dart';
 
 import '../resources/colors.dart';
 import '../screens/sendmoneyscreen.dart';
+
+
+
 class BeneficiaryList extends StatefulWidget {
   final String searchQuery;
 
@@ -19,10 +22,11 @@ class _BeneficiaryListState extends State<BeneficiaryList> {
   final DatabaseReference _dbRef = FirebaseDatabase.instance.ref().child('Bank_Accounts');
   bool _isLoading = true;
   bool _isConnected = true;
-
   List<Map<String, dynamic>> _beneficiaries = [];
   List<Map<String, dynamic>> _filteredBeneficiaries = [];
   late StreamSubscription<ConnectivityResult> _connectivitySubscription;
+  Set<String> _starredBeneficiaries = {}; // To track starred beneficiaries
+
 
   @override
   void initState() {
@@ -38,6 +42,73 @@ class _BeneficiaryListState extends State<BeneficiaryList> {
     _connectivitySubscription.cancel();
     super.dispose();
   }
+
+
+
+
+
+
+
+  // Method to show the edit dialog for updating nickname
+  void _showEditDialog(BuildContext context, Beneficiary beneficiary, String beneficiaryKey) {
+    final TextEditingController nicknameController = TextEditingController(text: beneficiary.nickname);
+
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text('Edit Nickname'),
+          content: TextField(
+            controller: nicknameController,
+            decoration: InputDecoration(labelText: 'Enter new nickname'),
+          ),
+          actions: <Widget>[
+            TextButton(
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+              child: Text('Cancel'),
+            ),
+            TextButton(
+              onPressed: () {
+                String newNickname = nicknameController.text.trim();
+                if (newNickname.isNotEmpty) {
+                  _updateNickname(newNickname, beneficiaryKey);
+                }
+                Navigator.of(context).pop();
+              },
+              child: Text('Save'),
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+  // Method to update the nickname in Firebase
+  void _updateNickname(String newNickname,String  beneficiaryKey) async {
+    try {
+      await _dbRef.child(beneficiaryKey).update({'nickname': newNickname});
+      // Show success message
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text('Nickname updated successfully!'),
+          backgroundColor: Colors.green,
+        ),
+      );
+      // Refresh the list (assuming you have a method to refresh data)
+      _fetchData(); // Call this method if available in your main widget to reload data
+    } catch (error) {
+      // Handle errors
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text('Error updating nickname: $error'),
+          backgroundColor: Colors.red,
+        ),
+      );
+    }
+  }
+
 
   Future<void> _checkInternetConnectivity() async {
     var connectivityResult = await (Connectivity().checkConnectivity());
@@ -56,11 +127,16 @@ class _BeneficiaryListState extends State<BeneficiaryList> {
   }
 
   Future<void> _fetchData() async {
+    // Cancel any existing listeners before starting a new one
     _dbRef.onValue.listen((event) {
       if (event.snapshot.value != null) {
-        final Map<dynamic, dynamic> beneficiariesMap = event.snapshot.value as Map<dynamic, dynamic>;
+        // Check if the snapshot contains data
+        final Map<dynamic, dynamic> beneficiariesMap =
+        event.snapshot.value as Map<dynamic, dynamic>;
 
-        final List<Map<String, dynamic>> beneficiariesList = beneficiariesMap.entries.map((entry) {
+        // Convert snapshot data to a list of maps containing beneficiary data
+        final List<Map<String, dynamic>> beneficiariesList =
+        beneficiariesMap.entries.map((entry) {
           final key = entry.key as String;
           final beneficiaryData = Map<String, dynamic>.from(entry.value as Map);
           return {'key': key, 'beneficiary': Beneficiary.fromJson(beneficiaryData)};
@@ -68,20 +144,30 @@ class _BeneficiaryListState extends State<BeneficiaryList> {
 
         setState(() {
           _beneficiaries = beneficiariesList;
-          _filterBeneficiaries();
-          _isLoading = false;
+          _filterBeneficiaries(); // Assuming this filters or sorts your beneficiaries
+          _isLoading = false; // Update loading state
         });
       } else {
+        // No data found
         setState(() {
           _isLoading = false;
         });
       }
     }).onError((error) {
+      // Handle errors and notify the user
       setState(() {
         _isLoading = false;
       });
+      // Optionally show an error message to the user
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text('Error fetching data: $error'),
+          backgroundColor: Colors.red,
+        ),
+      );
     });
   }
+
 
   void _filterBeneficiaries() {
     _filteredBeneficiaries = _beneficiaries
@@ -134,7 +220,15 @@ class _BeneficiaryListState extends State<BeneficiaryList> {
     );
   }
 
-
+  void _toggleStar(String beneficiaryKey) {
+    setState(() {
+      if (_starredBeneficiaries.contains(beneficiaryKey)) {
+        _starredBeneficiaries.remove(beneficiaryKey);
+      } else {
+        _starredBeneficiaries.add(beneficiaryKey);
+      }
+    });
+  }
   @override
   Widget build(BuildContext context) {
     return _isLoading
@@ -147,17 +241,22 @@ class _BeneficiaryListState extends State<BeneficiaryList> {
   Widget _buildBeneficiaryList() {
     return ListView.builder(
       itemCount: _filteredBeneficiaries.length,
+
       itemBuilder: (context, index) {
         final beneficiaryData = _filteredBeneficiaries[index];
         final beneficiaryKey = beneficiaryData['key'] as String;
         final beneficiary = beneficiaryData['beneficiary'] as Beneficiary;
+        final isStarred = _starredBeneficiaries.contains(beneficiaryKey);
 
-        return _buildBeneficiaryTile(beneficiary, beneficiaryKey);
+        //   bool isFavorite = beneficiary.favorite; // Replace with your actual favorite check logic
+
+
+        return _buildBeneficiaryTile(beneficiary, beneficiaryKey, isStarred);
       },
     );
   }
 
-  Widget _buildBeneficiaryTile(Beneficiary beneficiary, String beneficiaryKey) {
+  Widget _buildBeneficiaryTile(Beneficiary beneficiary, String beneficiaryKey, bool isStarred) {
     return GestureDetector(
       onTap: () {
         Navigator.push(
@@ -203,19 +302,23 @@ class _BeneficiaryListState extends State<BeneficiaryList> {
             Positioned(
               right: 0,
               top: 0,
-              child: Row(
+            child:  Row(
                 mainAxisSize: MainAxisSize.min,
                 children: [
-                  IconButton(
-                    icon: Icon(Icons.star, color: Colors.white),
+                IconButton(
+                    icon: Icon(
+                      isStarred ? Icons.star : Icons.star_border_sharp,
+                      color: isStarred ? Colors.yellow : Colors.white,
+                    ),
                     onPressed: () {
-                      // Implement favorite action
+                      _toggleStar(beneficiaryKey); // Toggle the star state
                     },
+
                   ),
                   IconButton(
                     icon: Icon(Icons.edit, color: Colors.white),
                     onPressed: () {
-                      // Implement edit action
+                      _showEditDialog(context, beneficiary, beneficiaryKey);
                     },
                   ),
                   IconButton(

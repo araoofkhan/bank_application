@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:bank_application/resources/colors.dart';
 import '../models/BankModel.dart';
@@ -78,14 +79,16 @@ class _AccountNumberEntryScreenState extends State<AccountNumberEntryScreen> {
               padding: const EdgeInsets.only(left: 20.0),
               child: TextField(
                 controller: _accountNumberController,
+
                 decoration: const InputDecoration(
-                  hintText: 'Enter Account Number',
+hintText: "Enter account number or IBAN number",
                   hintStyle: TextStyle(color: Colors.grey),
                   border: InputBorder.none,
-
-
                 ),
-                style: TextStyle(color: Colors.white,fontSize:20,fontFamily: 'CustomFont'),
+                inputFormatters: [
+                  LengthLimitingTextInputFormatter(24), // Limit input to 24 digits
+                ],
+                style: TextStyle(color: Colors.white,fontSize:18,fontFamily: 'CustomFont'),
                // keyboardType: TextInputType.number,
               ),
             ),
@@ -100,8 +103,9 @@ class _AccountNumberEntryScreenState extends State<AccountNumberEntryScreen> {
                 child: const Text(
                   "Next",
                   style: TextStyle(
-                    color: Colors.white,
-                    fontSize: 16,
+                    color: Colors.black,
+                    fontSize: 22,
+                    fontWeight: FontWeight.bold,
                   ),
                   textAlign: TextAlign.center,
                 ),
