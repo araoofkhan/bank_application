@@ -16,21 +16,28 @@ import 'DashBoardScreen.dart';
 
 class PaymentConfirmationScreen extends StatefulWidget {
   final double amount;
-  final String nickname;
+  final String beneficiaryname;
   final String accountNumber;
   final String bankName;
   final String bankLogo;
+  final String transactionid;
+  final String date;
 
-  PaymentConfirmationScreen({
+  PaymentConfirmationScreen( {
     required this.amount,
-    required this.nickname,
+    required this.beneficiaryname,
     required this.accountNumber,
     required this.bankName,
     required this.bankLogo,
+    required this.transactionid,
+    required this.date,
   });
+
+
 
   @override
   _PaymentConfirmationScreenState createState() => _PaymentConfirmationScreenState();
+
 }
 
 class _PaymentConfirmationScreenState extends State<PaymentConfirmationScreen> {
@@ -68,8 +75,8 @@ class _PaymentConfirmationScreenState extends State<PaymentConfirmationScreen> {
   Widget build(BuildContext context) {
     // Access amount via widget.amount
     final formattedAmount = formatAmount(widget.amount);
-    final String formattedDate = DateFormat('dd-MM-yyyy – HH:mm').format(DateTime.now());
-    final String transactionId = _generateTransactionId();
+
+
     return Scaffold(
       appBar: CustomAppBar(title: "Send Money"),
       body: Screenshot(
@@ -93,14 +100,14 @@ class _PaymentConfirmationScreenState extends State<PaymentConfirmationScreen> {
               Text('Rs. ${formattedAmount}', style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold, color: Colors.amber)),
               SizedBox(height: 10),
               Text('to', style: TextStyle(fontSize: 16, color: Colors.white)),
-              Text('${widget.nickname} - Account Number: ${widget.accountNumber.substring(0, 4)}*****${widget.accountNumber.substring(widget.accountNumber.length - 4)}', style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold, color: Colors.white)),
+              Text('${widget.beneficiaryname} - Account Number: ${widget.accountNumber.substring(0, 4)}*****${widget.accountNumber.substring(widget.accountNumber.length - 4)}', style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold, color: Colors.white)),
               SizedBox(height: 20),
               Image.asset(widget.bankLogo, width: 50, height: 50),
               Text(widget.bankName, style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold, color: Colors.white)),
               SizedBox(height: 10),
-              Text(formattedDate, style: TextStyle(fontSize: 16, color: Colors.white)),
+              Text(widget.date, style: TextStyle(fontSize: 16, color: Colors.white)),
               SizedBox(height: 10),
-              Text('Transaction ID (TID): $transactionId', style: TextStyle(fontSize: 16, color: Colors.white)),
+              Text('Transaction ID (TID): ${widget.transactionid}', style: TextStyle(fontSize: 16, color: Colors.white)),
               SizedBox(height: 20),
               Text(
                 'Transactions conducted after 09:00 PM and during holidays will show up in receiver\'s statement in next working day but balance will be updated in real time.',
@@ -181,8 +188,8 @@ class _PaymentConfirmationScreenState extends State<PaymentConfirmationScreen> {
     }
   }
 
-  String _generateTransactionId() {
-    var rng = Random();
-    return List.generate(7, (_) => rng.nextInt(10)).join();
-  }
+
+
+
+
 }

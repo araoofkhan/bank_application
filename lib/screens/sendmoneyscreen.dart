@@ -41,14 +41,34 @@ class _SendMoneyScreenState extends State<SendMoneyScreen> {
   void initState() {
     super.initState();
 
+    // Initialize the TextEditingController
     _amountController = TextEditingController();
+    // Add a listener to the controller to update balance when text changes
     _amountController.addListener(_updateBalance);
+
+    // Initialize FocusNode to manage focus state
+    _focusNode = FocusNode();
+
+    // Ensure the focus is removed when the widget builds
     WidgetsBinding.instance.addPostFrameCallback((_) {
       _focusNode.unfocus();
     });
 
+    // Fetch initial balance data from Firebase
     _fetchBalanceFromFirebase();
   }
+
+
+
+
+  @override
+  void dispose() {
+    // Dispose of controllers and focus nodes to avoid memory leaks
+    _amountController.dispose();
+    _focusNode.dispose();
+    super.dispose();
+  }
+
 
   Future<void> _fetchBalanceFromFirebase() async {
     try {
@@ -95,48 +115,61 @@ class _SendMoneyScreenState extends State<SendMoneyScreen> {
   }
 
 
-  @override
-  void dispose() {
-    _amountController.dispose();
-    _focusNode.dispose();
-    super.dispose();
-  }
+
 
   String formatInputAmount(String amount) {
-    final sanitizedInput = amount.replaceAll(RegExp('[^0-9.]'), '');
-    final enteredNumber = double.tryParse(sanitizedInput) ?? 0.0;
-    final formatter = NumberFormat('#,###.##', 'en_US');
-    return formatter.format(enteredNumber);
+    // Strip out all non-numeric characters except the decimal point.
+    String sanitizedInput = amount.replaceAll(RegExp(r'[^0-9.]'), '');
+
+    // Return immediately if the input is empty or a single dot.
+    if (sanitizedInput.isEmpty || sanitizedInput == '.') {
+      return sanitizedInput;
+    }
+
+    // Split input into the integer and decimal parts.
+    List<String> parts = sanitizedInput.split('.');
+
+    // Format the integer part with commas.
+    parts[0] = NumberFormat('#,###').format(int.parse(parts[0]));
+
+    // Rejoin the parts, limiting decimals to two if present.
+    return parts.length > 1 ? '${parts[0]}.${parts[1]}' : parts[0];
   }
 
-  String formatAmount(double amount) {
-    final formatter = NumberFormat('#,###.##', 'en_US');
-    return formatter.format(amount);
-  }
+
+
 
   void _updateBalance() {
     final enteredAmountString = _amountController.text;
-    final sanitizedInput = enteredAmountString.replaceAll(RegExp('[^0-9.]'), '');
+    final sanitizedInput = enteredAmountString.replaceAll(RegExp(r'[^0-9.]'), '');
     final enteredAmount = double.tryParse(sanitizedInput) ?? 0.0;
 
     setState(() {
       _updatedBalance = sanitizedInput.isEmpty ? _initialBalance : _initialBalance - enteredAmount;
       formattedUpdatedBalance = formatAmount(_updatedBalance);
 
-      final formattedInputAmount = formatInputAmount(enteredAmountString);
-      _amountController.value = TextEditingValue(
-        text: formattedInputAmount,
-        selection: TextSelection.collapsed(offset: formattedInputAmount.length),
-      );
+      // Apply formatting when necessary, but cautiously to avoid breaking the input flow.
+      if (enteredAmountString != sanitizedInput && sanitizedInput.isNotEmpty) {
+        final formattedInputAmount = formatInputAmount(sanitizedInput);
+        _amountController.value = TextEditingValue(
+          text: formattedInputAmount,
+          selection: TextSelection.collapsed(offset: formattedInputAmount.length),
+        );
+      }
     });
   }
+
+
+
   void _dismissKeyboard() {
     FocusScope.of(context).unfocus();
   }
-
   void _handleNextButton() {
+    // Get the amount entered by the user
     final enteredAmountString = _amountController.text;
+    // Sanitize the input to allow only numbers and decimals
     final sanitizedInput = enteredAmountString.replaceAll(RegExp('[^0-9.]'), '');
+    // Parse the sanitized input into a double
     final enteredAmount = double.tryParse(sanitizedInput) ?? 0.0;
 
     if (enteredAmount <= 0 || enteredAmountString.isEmpty) {
@@ -178,14 +211,14 @@ class _SendMoneyScreenState extends State<SendMoneyScreen> {
         },
       );
     } else {
-      _dismissKeyboard(); // Hide the keyboard
+      _dismissKeyboard(); // Hide the keyboard before proceeding
 
-      // Navigate to the ConfirmPaymentScreen
+      // Navigate to the ConfirmPaymentScreen with relevant data
       Navigator.push(
         context,
         MaterialPageRoute(
           builder: (context) => ConfirmPaymentScreen(
-            amount: enteredAmount, // Pass as double
+            amount: enteredAmount, // Pass the amount as double
             beneficiaryName: widget.beneficiaryName,
             bankLogo: widget.bankLogo,
             accountNumber: widget.accountNumber,
@@ -195,6 +228,12 @@ class _SendMoneyScreenState extends State<SendMoneyScreen> {
       );
     }
   }
+
+// Helper method to dismiss the keyboard
+  void dismissKeyboard() {
+    FocusScope.of(context).unfocus();
+  }
+
 
 
   @override
@@ -273,11 +312,11 @@ class _SendMoneyScreenState extends State<SendMoneyScreen> {
                                   children: [
                                     Text(
                                       widget.beneficiaryName,
-                                      style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                                      style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
                                     ),
                                     Text(
                                       widget.accountNumber,
-                                      style: TextStyle(fontSize: 14),
+                                      style: TextStyle(fontSize: 20),
                                     ),
                                   ],
                                 ),
@@ -288,7 +327,7 @@ class _SendMoneyScreenState extends State<SendMoneyScreen> {
                           Text(
                             'Available Balance Rs.$formattedUpdatedBalance',
                             style: TextStyle(
-                              color: Colors.green,
+                              color: AppColors.greenwcolor,
                               fontSize: 18,
                             ),
                           ),
@@ -296,8 +335,10 @@ class _SendMoneyScreenState extends State<SendMoneyScreen> {
                           TextField(
                             focusNode: _focusNode,
                             controller: _amountController,
-                            keyboardType: const TextInputType.numberWithOptions(decimal: true),
-
+                           keyboardType: TextInputType.numberWithOptions(decimal: true),
+                            inputFormatters: [
+                              FilteringTextInputFormatter.allow(RegExp(r'^\d*\.?\d*')), // Allows digits and one decimal point
+                            ],
                             style: TextStyle(color: Colors.white, fontSize: 19),
                             decoration: InputDecoration(
                               filled: true,

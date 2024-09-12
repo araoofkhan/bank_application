@@ -7,8 +7,6 @@ import 'package:fluttertoast/fluttertoast.dart';
 import 'package:bank_application/screens/DashBoardScreen.dart';
 
 
-
-import '../models/Beneficiary.dart';
 import 'BeneficiarySuccessfullyAddedScreen.dart'; // For AddNewBeneficiaryScreen
 
 

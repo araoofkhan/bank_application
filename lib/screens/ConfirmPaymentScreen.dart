@@ -1,12 +1,21 @@
+import 'dart:math';
 import 'dart:ui';
 
 import 'package:bank_application/resources/colors.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
+import '../TransactionService.dart';
 import '../widgets/CustomAppBar.dart';
 import 'DashBoardScreen.dart';
 import 'PaymentConfirmationScreen.dart';
 import 'SendMoneyScreen.dart';
+import 'package:firebase_database/firebase_database.dart';
+import 'package:firebase_database_platform_interface/firebase_database_platform_interface.dart' as firebase_transaction;
+import 'package:bank_application/Transaction.dart' as app_transaction;
+
+
+
 final DatabaseReference _balanceRef = FirebaseDatabase.instance
     .ref()
     .child('accountHolder')
@@ -32,6 +41,73 @@ class ConfirmPaymentScreen extends StatefulWidget {
 }
 
 class _ConfirmPaymentScreenState extends State<ConfirmPaymentScreen> {
+  final String formattedDate = DateFormat('dd-MM-yyyy – HH:mm').format(DateTime.now());
+
+late double totalAmount;
+  late final String transactionId;
+
+  @override
+  void initState() {
+    super.initState();
+    transactionId = _generateTransactionId();
+  }
+
+  String _generateTransactionId() {
+    var rng = Random();
+    return List.generate(7, (_) => rng.nextInt(10)).join();
+  }
+// Method to create and save the transaction
+  Future<void> _createAndSaveTransaction() async {
+    // Calculate the total amount with charges
+    double charges = _calculateBankCharges();
+    double totalAmount = widget.amount + charges;
+
+    // Generate transactionId and formatted date
+    final String transactionId = _generateTransactionId();
+    final String formattedDate = DateFormat('dd-MM-yyyy – HH:mm').format(DateTime.now());
+
+    // Create the transaction object
+    final transaction = app_transaction.Transaction(
+      transactionId: transactionId,
+      beneficiaryaccountNumber: widget.accountNumber,
+      bankName: widget.bankName,
+      beneficiaryName: widget.beneficiaryName,
+      amount: totalAmount, // Convert to string with 2 decimal points
+      date: formattedDate,
+    );
+
+    print('Transaction ID: ${transaction.transactionId}');
+
+    // Save the transaction to Firebase
+    final transactionService = TransactionService();
+    await transactionService.saveTransaction(widget.accountNumber, transaction);
+  }
+
+  void _onSendMoneyPressed() async {
+    print("_updateBalance called");
+
+    // Update balance before transaction
+    _updateBalance();
+
+    // Wait for the transaction to be created and saved
+    await _createAndSaveTransaction();
+
+    // Proceed with navigation or further actions
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => PaymentConfirmationScreen(
+          beneficiaryname: widget.beneficiaryName,
+          transactionid: transactionId,
+          date: formattedDate,
+          accountNumber: widget.accountNumber,
+          bankLogo: widget.bankLogo,
+          bankName: widget.bankName,
+          amount: widget.amount,
+        ),
+      ),
+    );
+  }
 
 
   Future<void> _updateBalance() async {
@@ -98,15 +174,7 @@ class _ConfirmPaymentScreenState extends State<ConfirmPaymentScreen> {
     return widget.amount > 50000 ? 0.002 * widget.amount : 0.0;
   }
 
-  void _onSendMoneyPressed() async {
-    print('updateBalance method called');
-    await _updateBalance();
-    Navigator.push(
-        context,
-        MaterialPageRoute(
-            builder: (context) =>   PaymentConfirmationScreen(nickname: widget.beneficiaryName,
-                accountNumber: widget.accountNumber, bankLogo: widget.bankLogo, bankName: widget.bankName, amount: widget.amount)));
-  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
